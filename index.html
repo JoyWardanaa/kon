@@ -27,19 +27,23 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 .unlock-btn.disabled{opacity:0.6;cursor:not-allowed}
 .section-title{font-size:1.2rem;font-weight:600;margin:25px 0 15px;border-left:4px solid #ffb347;padding-left:15px;display:flex;justify-content:space-between;align-items:center}
 .button-grid{display:grid;grid-template-columns:1fr;gap:12px}
-.action-card{background:rgba(15,15,25,0.8);backdrop-filter:blur(10px);border-radius:20px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;transition:0.2s;border:1px solid rgba(255,255,255,0.1);cursor:pointer}
-.action-card:hover{background:rgba(35,35,55,0.9);border-color:#ffaa44;transform:translateX(5px)}
+.action-card{background:rgba(15,15,25,0.8);backdrop-filter:blur(10px);border-radius:20px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;transition:0.2s;border:2px solid rgba(255,255,255,0.1);cursor:pointer}
+.action-card.completed-status{border-color:#2ecc71;background:rgba(46,204,113,0.15)}
+.action-card.pending-status{border-color:#ff4444;background:rgba(255,68,68,0.1)}
+.action-card:hover{transform:translateX(5px)}
 .action-left{display:flex;align-items:center;gap:14px;flex:1}
 .action-left i{font-size:1.6rem;width:32px;color:#ffaa44}
 .action-info h4{font-size:1rem;font-weight:600}
 .action-info p{font-size:0.7rem;color:#aaa}
 .action-info .link-url{font-size:0.65rem;color:#ffaa44;margin-top:2px;word-break:break-all}
-.check-circle{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center}
-.check-circle.completed{background:#2ecc71;color:white}
+.status-badge{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem}
+.status-badge.completed{background:#2ecc71;color:white}
+.status-badge.pending{background:#ff4444;color:white}
 .admin-panel{background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);border-radius:24px;padding:1rem;margin-top:20px;border:1px solid rgba(255,215,0,0.3)}
 .input-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 .input-row input,.input-row select{flex:1;padding:10px 15px;border-radius:40px;border:none;background:#1e1e2a;color:white}
 .input-row button{background:#ffb347;border:none;padding:0 20px;border-radius:40px;font-weight:bold;cursor:pointer}
+.save-btn{background:#2ecc71;color:white;padding:12px 20px;border-radius:40px;border:none;font-weight:bold;cursor:pointer;width:100%;margin-top:10px}
 .warning{font-size:0.7rem;color:#ffaa88;margin-top:8px}
 .footer{text-align:center;font-size:0.7rem;margin-top:25px;color:#aaa}
 .login-icon{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);padding:10px 15px;border-radius:40px;cursor:pointer;z-index:100;font-size:0.8rem;transition:0.2s}
@@ -53,7 +57,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 .delete-btn{background:#ff4444;border:none;padding:4px 12px;border-radius:20px;font-size:0.7rem;cursor:pointer;margin-left:10px}
 .edit-link-btn{background:#2196F3;border:none;padding:4px 12px;border-radius:20px;font-size:0.7rem;cursor:pointer;margin-left:10px}
 .admin-badge{background:#ff9800;padding:2px 8px;border-radius:20px;font-size:0.7rem}
-.user-mode .action-card{cursor:pointer}
+.timer-text{font-size:0.65rem;color:#ffaa44;margin-top:4px}
 @media (max-width:500px){.container{padding:1.2rem}}
 </style>
 </head>
@@ -85,7 +89,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 </div>
 <div id="buttonsContainer" class="button-grid"></div>
 
-<!-- Admin Panel (hidden by default) -->
+<!-- Admin Panel -->
 <div id="adminPanel" class="admin-panel" style="display:none">
 <div><i class="fas fa-plus-circle"></i> Tambah Button Baru (Max 8)</div>
 <div class="input-row">
@@ -98,18 +102,18 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 <option value="fas fa-bell">🔔 Enable Notifications</option>
 <option value="fab fa-twitter">🐦 Twitter Follow</option>
 <option value="fab fa-instagram">📸 Instagram Follow</option>
-<option value="fab fa-tiktok">🎵 TikTok Follow</option>
 </select>
 <button id="addBtn">+ Tambah</button>
 </div>
-<div class="input-row" style="margin-top:12px">
+<div class="input-row">
 <input type="text" id="redirectUrlInput" placeholder="Link tujuan setelah unlock" value="https://lynk.id/joywardana">
 <button id="saveRedirectBtn">Set Link Tujuan</button>
 </div>
-<div class="warning">💡 Klik tombol Edit/Hapus pada card untuk mengelola button</div>
+<button id="saveAllChangesBtn" class="save-btn"><i class="fas fa-save"></i> SAVE ALL CHANGES (Publik)</button>
+<div class="warning">💡 Edit link atau hapus button, lalu klik SAVE agar semua user melihat perubahan</div>
 </div>
 
-<div class="footer"><i class="fas fa-link"></i> Selesaikan semua aksi untuk unlock link</div>
+<div class="footer"><i class="fas fa-link"></i> Klik card → buka link → tunggu 5 detik → auto verifikasi</div>
 </div>
 
 <!-- Login Modal -->
@@ -120,11 +124,11 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 <input type="text" id="modalUser" placeholder="Username">
 <input type="password" id="modalPass" placeholder="Password">
 <button id="modalLoginBtn">Login</button>
-<p style="margin-top:12px;font-size:0.7rem;color:#aaa">Admin: gunakan kredensial khusus | User: isi username & password apapun</p>
+<p style="margin-top:12px;font-size:0.7rem;color:#aaa">Admin: kredensial khusus | User: isi username & password apapun</p>
 </div>
 </div>
 
-<!-- Login Icon (floating) -->
+<!-- Login Icon -->
 <div class="login-icon" onclick="showLoginModal()">
 <i class="fas fa-user-circle"></i> <span id="loginStatusText">Login</span>
 </div>
@@ -133,7 +137,8 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 const ADMIN_USER = "JoyExelWardana-jyz";
 const ADMIN_PASS = "JoyExelWardana-jyz4121#";
 
-let buttons = [
+// Data utama (akan disimpan ke localStorage untuk publik)
+let masterButtons = [
 {id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe",channelId:"@JoyWardanaa"},
 {id:"b2",name:"Like Video",icon:"fas fa-thumbs-up",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like"},
 {id:"b3",name:"Like & Comment",icon:"fas fa-comment-dots",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like_comment"},
@@ -145,56 +150,75 @@ const MAX=8;
 let currentUser = null;
 let userCompleted = JSON.parse(localStorage.getItem('userCompleted')) || {};
 let redirectTargetUrl = localStorage.getItem('redirectTargetUrl') || "https://lynk.id/joywardana";
+let activeTimers = {};
 
-// ========== FUNGSI CEK AKSI NYATA ==========
-function verifyRealAction(btn, callback) {
-    let message = "";
-    let actionGuide = "";
-    
-    switch(btn.type) {
-        case "subscribe":
-            actionGuide = `1. Buka link: ${btn.url}\n2. Klik tombol SUBSCRIBE (berwarna merah)\n3. Tunggu hingga berubah menjadi SUBSCRIBED`;
-            message = `🔔 VERIFIKASI SUBSCRIBE 🔔\n\n${actionGuide}\n\nSetelah berhasil subscribe, klik OK untuk verifikasi.\n\nApakah Anda sudah SUBSCRIBE ke channel ini?`;
-            break;
-        case "like":
-            actionGuide = `1. Buka link: ${btn.url}\n2. Klik tombol LIKE (👍)\n3. Tombol akan berubah warna menjadi biru`;
-            message = `👍 VERIFIKASI LIKE 👍\n\n${actionGuide}\n\nSetelah berhasil like, klik OK untuk verifikasi.\n\nApakah Anda sudah LIKE video tersebut?`;
-            break;
-        case "like_comment":
-            actionGuide = `1. Buka link: ${btn.url}\n2. Klik LIKE (👍)\n3. Tulis komentar positif di kolom komentar\n4. Kirim komentar`;
-            message = `💬 VERIFIKASI LIKE & COMMENT 💬\n\n${actionGuide}\n\nSetelah selesai, klik OK untuk verifikasi.\n\nApakah Anda sudah LIKE dan COMMENT?`;
-            break;
-        case "join":
-            actionGuide = `1. Buka link: ${btn.url}\n2. Klik "Accept Invite" atau "Join Server"\n3. Server akan masuk ke daftar Discord Anda`;
-            message = `🎮 VERIFIKASI JOIN DISCORD 🎮\n\n${actionGuide}\n\nSetelah berhasil join, klik OK untuk verifikasi.\n\nApakah Anda sudah JOIN server Discord?`;
-            break;
-        case "notify":
-            actionGuide = `1. Buka link: ${btn.url}\n2. Klik ikon lonceng (🔔) di samping tombol Subscribe\n3. Pilih "Semua notifikasi" atau "All notifications"`;
-            message = `🔔 VERIFIKASI NOTIFIKASI 🔔\n\n${actionGuide}\n\nSetelah mengaktifkan notifikasi, klik OK untuk verifikasi.\n\nApakah Anda sudah mengaktifkan NOTIFIKASI?`;
-            break;
-        default:
-            message = `Verifikasi: Apakah Anda sudah menyelesaikan "${btn.name}"?\n\nLink: ${btn.url}`;
+// ========== LOAD/SAVE MASTER BUTTONS (PUBLIK) ==========
+function loadMasterButtons() {
+    const saved = localStorage.getItem('masterButtons');
+    if(saved) {
+        try {
+            masterButtons = JSON.parse(saved);
+        } catch(e) {}
     }
-    
+}
+
+function saveMasterButtons() {
+    localStorage.setItem('masterButtons', JSON.stringify(masterButtons));
+}
+
+// Get buttons yang tampil (master + status user)
+function getDisplayButtons() {
+    return masterButtons.map(btn => ({
+        ...btn,
+        completed: (currentUser === 'admin') ? btn.completed : (userCompleted[btn.id] || false)
+    }));
+}
+
+// ========== AUTO VERIFIKASI dengan TIMER 5 DETIK ==========
+function startVerification(btn, cardElement) {
     // Buka link di tab baru
-    if(btn.url && btn.url !== "#") {
-        window.open(btn.url, '_blank');
+    const newWindow = window.open(btn.url, '_blank');
+    
+    // Tampilkan timer di card
+    const timerDiv = document.createElement('div');
+    timerDiv.className = 'timer-text';
+    timerDiv.id = `timer_${btn.id}`;
+    timerDiv.innerHTML = '⏳ Verifikasi dalam 5 detik... Tetap di halaman YouTube/Discord';
+    
+    const infoDiv = cardElement.querySelector('.action-info');
+    if(infoDiv && !document.getElementById(`timer_${btn.id}`)) {
+        infoDiv.appendChild(timerDiv);
     }
     
-    setTimeout(() => {
-        if(confirm(message + "\n\n✅ Klik OK jika sudah selesai melakukan aksi tersebut")) {
-            // Verifikasi kedua untuk memastikan
-            setTimeout(() => {
-                if(confirm("KONFIRMASI AKHIR\n\nApakah Anda YAKIN sudah menyelesaikan aksi ini dengan benar?\n(Tidak bisa diubah setelah ini)")) {
-                    callback(true);
-                } else {
-                    callback(false);
-                }
-            }, 300);
-        } else {
-            callback(false);
+    let seconds = 5;
+    if(activeTimers[btn.id]) clearInterval(activeTimers[btn.id]);
+    
+    activeTimers[btn.id] = setInterval(() => {
+        seconds--;
+        const timerEl = document.getElementById(`timer_${btn.id}`);
+        if(timerEl) {
+            timerEl.innerHTML = `⏳ Tunggu ${seconds} detik... (Jangan tutup tab YouTube/Discord)`;
         }
-    }, 500);
+        
+        if(seconds <= 0) {
+            clearInterval(activeTimers[btn.id]);
+            delete activeTimers[btn.id];
+            if(timerEl) timerEl.remove();
+            
+            // Verifikasi sukses
+            if(currentUser === 'admin') {
+                btn.completed = true;
+                saveMasterButtons();
+            } else {
+                userCompleted[btn.id] = true;
+                localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
+            }
+            
+            // Tampilkan notifikasi sukses
+            alert(`✅ BERHASIL! ✅\n\n"${btn.name}" telah selesai!\nTerima kasih telah menyelesaikan aksi.`);
+            render();
+        }
+    }, 1000);
 }
 
 // ========== RENDER BUTTONS ==========
@@ -203,10 +227,16 @@ function render() {
     if(!container) return;
     container.innerHTML = '';
     const isAdmin = (currentUser === 'admin');
+    const displayButtons = getDisplayButtons();
     
-    buttons.forEach((btn, index) => {
+    displayButtons.forEach((btn, index) => {
         const card = document.createElement('div');
         card.className = 'action-card';
+        if(btn.completed) {
+            card.classList.add('completed-status');
+        } else {
+            card.classList.add('pending-status');
+        }
         
         const left = document.createElement('div');
         left.className = 'action-left';
@@ -215,29 +245,34 @@ function render() {
         const info = document.createElement('div');
         info.className = 'action-info';
         
-        let isCompleted = false;
-        if(isAdmin) {
-            isCompleted = btn.completed;
-        } else {
-            isCompleted = userCompleted[btn.id] || false;
-        }
-        
-        info.innerHTML = `<h4>${btn.name}</h4><p>${isCompleted ? '✅ Selesai' : '⏳ Belum selesai'}</p><div class="link-url">🔗 ${btn.url.length > 45 ? btn.url.substring(0,45)+'...' : btn.url}</div>`;
+        info.innerHTML = `<h4>${btn.name}</h4>
+                         <p>${btn.completed ? '✅ Selesai' : '⏳ Belum selesai'}</p>
+                         <div class="link-url">🔗 ${btn.url.length > 45 ? btn.url.substring(0,45)+'...' : btn.url}</div>`;
         left.appendChild(icon);
         left.appendChild(info);
         
-        // Admin buttons: Edit & Hapus
+        // Status badge (hijau/merah)
+        const statusBadge = document.createElement('div');
+        statusBadge.className = 'status-badge';
+        if(btn.completed) {
+            statusBadge.classList.add('completed');
+            statusBadge.innerHTML = '<i class="fas fa-check"></i>';
+        } else {
+            statusBadge.classList.add('pending');
+            statusBadge.innerHTML = '<i class="fas fa-times"></i>';
+        }
+        
+        // Admin buttons: Edit & Hapus (tapi perubahan harus di-save)
         if(isAdmin) {
             const editBtn = document.createElement('button');
-            editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+            editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Link';
             editBtn.className = 'edit-link-btn';
             editBtn.onclick = (e) => {
                 e.stopPropagation();
                 const newUrl = prompt(`Edit link untuk "${btn.name}":\nMasukkan URL tujuan (YouTube, Discord, dll)`, btn.url);
                 if(newUrl && newUrl.trim() !== "") {
-                    btn.url = newUrl.trim();
-                    render();
-                    saveButtonsToLocal();
+                    masterButtons[index].url = newUrl.trim();
+                    render(); // Preview perubahan
                 }
             };
             
@@ -246,10 +281,9 @@ function render() {
             deleteBtn.className = 'delete-btn';
             deleteBtn.onclick = (e) => {
                 e.stopPropagation();
-                if(confirm(`Hapus button "${btn.name}"?`)) {
-                    buttons.splice(index, 1);
+                if(confirm(`Hapus button "${btn.name}"? Perubahan harus di-SAVE agar publik melihat.`)) {
+                    masterButtons.splice(index, 1);
                     render();
-                    saveButtonsToLocal();
                 }
             };
             
@@ -257,62 +291,58 @@ function render() {
             left.appendChild(deleteBtn);
         }
         
-        const checkDiv = document.createElement('div');
-        checkDiv.className = 'check-circle';
-        if(isCompleted) {
-            checkDiv.classList.add('completed');
-            checkDiv.innerHTML = '<i class="fas fa-check"></i>';
-        } else {
-            checkDiv.innerHTML = '<i class="far fa-circle"></i>';
-        }
         card.appendChild(left);
-        card.appendChild(checkDiv);
+        card.appendChild(statusBadge);
         
-        // Event klik
-        if(isAdmin) {
+        // Event klik untuk verifikasi
+        if(!btn.completed) {
             card.onclick = (e) => {
                 if(e.target.classList.contains('edit-link-btn') || e.target.classList.contains('delete-btn')) return;
-                btn.completed = !btn.completed;
-                render();
-                saveButtonsToLocal();
-            };
-        } else {
-            card.onclick = (e) => {
-                if(userCompleted[btn.id]) {
-                    alert("✅ Aksi sudah selesai! Terima kasih.");
+                if(activeTimers[btn.id]) {
+                    alert("⏳ Verifikasi sedang berjalan! Tunggu hingga selesai.");
                     return;
                 }
-                verifyRealAction(btn, (success) => {
-                    if(success) {
-                        userCompleted[btn.id] = true;
-                        localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
-                        render();
-                        updateUnlockStatus();
-                    } else {
-                        alert("❌ Verifikasi gagal. Pastikan Anda sudah menyelesaikan aksi dengan benar.");
-                    }
-                });
+                
+                const confirmMsg = `🔔 KONFIRMASI 🔔\n\nAnda akan membuka:\n${btn.url}\n\nSetelah membuka, Anda HARUS:\n${getActionGuide(btn.type)}\n\nAnda akan diberikan waktu 5 detik untuk menyelesaikan aksi.\n\nLanjutkan?`;
+                
+                if(confirm(confirmMsg)) {
+                    startVerification(btn, card);
+                }
+            };
+        } else {
+            card.style.cursor = 'default';
+            card.onclick = () => {
+                alert("✅ Aksi sudah selesai! Terima kasih.");
             };
         }
+        
         container.appendChild(card);
     });
     updateProgress();
 }
 
-function updateProgress() {
-    const isAdmin = (currentUser === 'admin');
-    let total = buttons.length;
-    let completed = 0;
-    if(isAdmin) {
-        completed = buttons.filter(b => b.completed).length;
-    } else {
-        completed = buttons.filter(b => userCompleted[b.id] === true).length;
+function getActionGuide(type) {
+    switch(type) {
+        case "subscribe": return "✅ Klik tombol SUBSCRIBE (berwarna merah)";
+        case "like": return "👍 Klik tombol LIKE (jempol)";
+        case "like_comment": return "👍 Klik LIKE + tulis komentar";
+        case "join": return "🎮 Klik 'Accept Invite' atau 'Join Server'";
+        case "notify": return "🔔 Klik lonceng → pilih 'Semua notifikasi'";
+        default: return "✅ Selesaikan aksi yang diminta";
     }
+}
+
+function updateProgress() {
+    const displayButtons = getDisplayButtons();
+    let total = displayButtons.length;
+    let completed = displayButtons.filter(b => b.completed).length;
+    
     document.getElementById('completedCount').innerText = completed;
     document.getElementById('totalCount').innerText = total;
     const percent = total === 0 ? 0 : (completed / total) * 100;
     document.getElementById('progressFill').style.width = `${percent}%`;
     const unlockBtn = document.getElementById('unlockBtn');
+    
     if(completed === total && total > 0) {
         unlockBtn.classList.remove('disabled');
         unlockBtn.innerText = '🔓 UNLOCK LINK → Lanjut ke tujuan';
@@ -322,28 +352,18 @@ function updateProgress() {
     }
 }
 
-function updateUnlockStatus() {
-    updateProgress();
-}
-
-function saveButtonsToLocal() {
-    if(currentUser === 'admin') {
-        localStorage.setItem('adminButtons', JSON.stringify(buttons));
-    }
-}
-
-function loadButtonsFromLocal() {
-    const saved = localStorage.getItem('adminButtons');
-    if(saved) {
-        try {
-            buttons = JSON.parse(saved);
-        } catch(e) {}
-    }
+// ========== ADMIN SAVE (Publikasi perubahan) ==========
+function saveAllChanges() {
+    saveMasterButtons();
+    // Reset userCompleted untuk semua user? Biarkan saja, user tetap punya progress lama
+    // Tapi jika button berubah, user harus ulang untuk button baru
+    alert("✅ Semua perubahan telah disimpan!\n\n- Link button baru akan terlihat oleh semua user\n- Button yang dihapus tidak akan muncul lagi\n- User tetap memiliki progress untuk button yang masih ada");
+    render();
 }
 
 // ========== ADMIN FUNGSI ==========
 function addNewButton() {
-    if(buttons.length >= MAX) {
+    if(masterButtons.length >= MAX) {
         alert(`Maksimal ${MAX} button!`);
         return;
     }
@@ -362,15 +382,13 @@ function addNewButton() {
     else if(selectedIcon.includes('heart')) { defaultUrl = "https://www.youtube.com/watch?v=example"; type = "like_comment"; }
     else if(selectedIcon.includes('bell')) { defaultUrl = "https://www.youtube.com/@JoyWardanaa"; type = "notify"; }
     else if(selectedIcon.includes('instagram')) { defaultUrl = "https://instagram.com/joywardana"; type = "follow"; }
-    else if(selectedIcon.includes('tiktok')) { defaultUrl = "https://tiktok.com/@joywardana"; type = "follow"; }
     
     const newId = "btn_"+Date.now()+"_"+Math.floor(Math.random()*999);
-    buttons.push({
+    masterButtons.push({
         id:newId, name:newName, icon:selectedIcon,
         completed:false, url:defaultUrl, type:type
     });
     render();
-    saveButtonsToLocal();
     nameInput.value = "";
 }
 
@@ -385,14 +403,10 @@ function saveRedirectUrl() {
 
 // ========== UNLOCK & REDIRECT ==========
 function handleUnlock() {
-    const isAdmin = (currentUser === 'admin');
-    let total = buttons.length;
-    let completed = 0;
-    if(isAdmin) {
-        completed = buttons.filter(b => b.completed).length;
-    } else {
-        completed = buttons.filter(b => userCompleted[b.id] === true).length;
-    }
+    const displayButtons = getDisplayButtons();
+    let total = displayButtons.length;
+    let completed = displayButtons.filter(b => b.completed).length;
+    
     if(completed === total && total > 0) {
         alert("🎉 SELAMAT! 🎉\nAnda telah menyelesaikan semua aksi!\nAkan diarahkan ke link tujuan.");
         window.location.href = redirectTargetUrl;
@@ -401,7 +415,7 @@ function handleUnlock() {
     }
 }
 
-// ========== LOGIN SYSTEM (Tersembunyi) ==========
+// ========== LOGIN SYSTEM ==========
 function showLoginModal() {
     document.getElementById('loginModal').classList.add('show');
 }
@@ -415,7 +429,6 @@ function login(username, password) {
         currentUser = 'admin';
         localStorage.setItem('currentUser', 'admin');
         localStorage.removeItem('userName');
-        loadButtonsFromLocal();
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('adminIndicator').style.display = 'inline';
         document.getElementById('loginStatusText').innerHTML = '<i class="fas fa-crown"></i> Admin';
@@ -439,6 +452,12 @@ function login(username, password) {
 }
 
 function logout() {
+    // Hentikan semua timer
+    Object.keys(activeTimers).forEach(timerId => {
+        if(activeTimers[timerId]) clearInterval(activeTimers[timerId]);
+    });
+    activeTimers = {};
+    
     currentUser = null;
     localStorage.removeItem('currentUser');
     localStorage.removeItem('userName');
@@ -449,11 +468,11 @@ function logout() {
 }
 
 function checkSession() {
+    loadMasterButtons();
     const savedUser = localStorage.getItem('currentUser');
     const savedName = localStorage.getItem('userName');
     if(savedUser === 'admin') {
         currentUser = 'admin';
-        loadButtonsFromLocal();
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('adminIndicator').style.display = 'inline';
         document.getElementById('loginStatusText').innerHTML = '<i class="fas fa-crown"></i> Admin';
@@ -480,6 +499,7 @@ document.getElementById('modalLoginBtn').addEventListener('click', () => {
 document.getElementById('unlockBtn').addEventListener('click', handleUnlock);
 document.getElementById('addBtn').addEventListener('click', addNewButton);
 document.getElementById('saveRedirectBtn').addEventListener('click', saveRedirectUrl);
+document.getElementById('saveAllChangesBtn').addEventListener('click', saveAllChanges);
 document.addEventListener('keydown', (e) => {
     if(e.key === 'Escape') closeLoginModal();
 });
