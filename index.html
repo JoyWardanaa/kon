@@ -34,8 +34,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 .action-left{display:flex;align-items:center;gap:14px;flex:1}
 .action-left i{font-size:1.6rem;width:32px;color:#ffaa44}
 .action-info h4{font-size:1rem;font-weight:600}
-.action-info p{font-size:0.7rem;color:#aaa}
-.action-info .link-url{font-size:0.65rem;color:#ffaa44;margin-top:2px;word-break:break-all}
+.action-info p{font-size:0.7rem;color:#aaa;margin-top:2px}
 .status-badge{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem}
 .status-badge.completed{background:#2ecc71;color:white}
 .status-badge.pending{background:#ff4444;color:white}
@@ -56,8 +55,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 .close-modal{position:absolute;top:20px;right:30px;font-size:2rem;cursor:pointer}
 .delete-btn{background:#ff4444;border:none;padding:4px 12px;border-radius:20px;font-size:0.7rem;cursor:pointer;margin-left:10px}
 .edit-link-btn{background:#2196F3;border:none;padding:4px 12px;border-radius:20px;font-size:0.7rem;cursor:pointer;margin-left:10px}
-.admin-badge{background:#ff9800;padding:2px 8px;border-radius:20px;font-size:0.7rem}
-.timer-text{font-size:0.65rem;color:#ffaa44;margin-top:4px}
+.timer-text{font-size:0.7rem;color:#ffaa44;margin-top:5px;font-weight:500}
 @media (max-width:500px){.container{padding:1.2rem}}
 </style>
 </head>
@@ -137,16 +135,16 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 const ADMIN_USER = "JoyExelWardana-jyz";
 const ADMIN_PASS = "JoyExelWardana-jyz4121#";
 
-// Data utama (akan disimpan ke localStorage untuk publik)
+// Data master buttons (akan disimpan ke localStorage dan dilihat semua user)
 let masterButtons = [
-{id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe",channelId:"@JoyWardanaa"},
+{id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe"},
 {id:"b2",name:"Like Video",icon:"fas fa-thumbs-up",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like"},
 {id:"b3",name:"Like & Comment",icon:"fas fa-comment-dots",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like_comment"},
 {id:"b4",name:"Join Discord Server",icon:"fab fa-discord",completed:false,url:"https://discord.gg/example",type:"join"},
 {id:"b5",name:"Enable Notifications",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa",type:"notify"},
-{id:"b6",name:"Subscribe & Bell",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe",channelId:"@JoyWardanaa"}
+{id:"b6",name:"Subscribe & Bell",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe"}
 ];
-const MAX=8;
+const MAX = 8;
 let currentUser = null;
 let userCompleted = JSON.parse(localStorage.getItem('userCompleted')) || {};
 let redirectTargetUrl = localStorage.getItem('redirectTargetUrl') || "https://lynk.id/joywardana";
@@ -162,7 +160,7 @@ function loadMasterButtons() {
     }
 }
 
-function saveMasterButtons() {
+function saveMasterButtonsToLocal() {
     localStorage.setItem('masterButtons', JSON.stringify(masterButtons));
 }
 
@@ -177,16 +175,17 @@ function getDisplayButtons() {
 // ========== AUTO VERIFIKASI dengan TIMER 5 DETIK ==========
 function startVerification(btn, cardElement) {
     // Buka link di tab baru
-    const newWindow = window.open(btn.url, '_blank');
+    window.open(btn.url, '_blank');
     
     // Tampilkan timer di card
     const timerDiv = document.createElement('div');
     timerDiv.className = 'timer-text';
     timerDiv.id = `timer_${btn.id}`;
-    timerDiv.innerHTML = '⏳ Verifikasi dalam 5 detik... Tetap di halaman YouTube/Discord';
+    timerDiv.innerHTML = '⏳ Verifikasi dalam 5 detik... Tetap di halaman tujuan';
     
     const infoDiv = cardElement.querySelector('.action-info');
-    if(infoDiv && !document.getElementById(`timer_${btn.id}`)) {
+    const existingTimer = document.getElementById(`timer_${btn.id}`);
+    if(infoDiv && !existingTimer) {
         infoDiv.appendChild(timerDiv);
     }
     
@@ -197,7 +196,7 @@ function startVerification(btn, cardElement) {
         seconds--;
         const timerEl = document.getElementById(`timer_${btn.id}`);
         if(timerEl) {
-            timerEl.innerHTML = `⏳ Tunggu ${seconds} detik... (Jangan tutup tab YouTube/Discord)`;
+            timerEl.innerHTML = `⏳ Tunggu ${seconds} detik... (${seconds > 0 ? 'Jangan tutup tab' : 'Verifikasi...'})`;
         }
         
         if(seconds <= 0) {
@@ -207,18 +206,29 @@ function startVerification(btn, cardElement) {
             
             // Verifikasi sukses
             if(currentUser === 'admin') {
-                btn.completed = true;
-                saveMasterButtons();
+                const originalBtn = masterButtons.find(b => b.id === btn.id);
+                if(originalBtn) originalBtn.completed = true;
+                saveMasterButtonsToLocal();
             } else {
                 userCompleted[btn.id] = true;
                 localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
             }
             
-            // Tampilkan notifikasi sukses
             alert(`✅ BERHASIL! ✅\n\n"${btn.name}" telah selesai!\nTerima kasih telah menyelesaikan aksi.`);
             render();
         }
     }, 1000);
+}
+
+function getActionGuide(type) {
+    switch(type) {
+        case "subscribe": return "✅ Klik tombol SUBSCRIBE (berwarna merah)";
+        case "like": return "👍 Klik tombol LIKE (jempol)";
+        case "like_comment": return "👍 Klik LIKE + tulis komentar";
+        case "join": return "🎮 Klik 'Accept Invite' atau 'Join Server'";
+        case "notify": return "🔔 Klik lonceng → pilih 'Semua notifikasi'";
+        default: return "✅ Selesaikan aksi yang diminta";
+    }
 }
 
 // ========== RENDER BUTTONS ==========
@@ -246,8 +256,7 @@ function render() {
         info.className = 'action-info';
         
         info.innerHTML = `<h4>${btn.name}</h4>
-                         <p>${btn.completed ? '✅ Selesai' : '⏳ Belum selesai'}</p>
-                         <div class="link-url">🔗 ${btn.url.length > 45 ? btn.url.substring(0,45)+'...' : btn.url}</div>`;
+                         <p>${btn.completed ? '✅ Selesai' : '⏳ Belum selesai'}</p>`;
         left.appendChild(icon);
         left.appendChild(info);
         
@@ -262,7 +271,7 @@ function render() {
             statusBadge.innerHTML = '<i class="fas fa-times"></i>';
         }
         
-        // Admin buttons: Edit & Hapus (tapi perubahan harus di-save)
+        // Admin buttons: Edit & Hapus
         if(isAdmin) {
             const editBtn = document.createElement('button');
             editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Link';
@@ -272,7 +281,7 @@ function render() {
                 const newUrl = prompt(`Edit link untuk "${btn.name}":\nMasukkan URL tujuan (YouTube, Discord, dll)`, btn.url);
                 if(newUrl && newUrl.trim() !== "") {
                     masterButtons[index].url = newUrl.trim();
-                    render(); // Preview perubahan
+                    render();
                 }
             };
             
@@ -321,17 +330,6 @@ function render() {
     updateProgress();
 }
 
-function getActionGuide(type) {
-    switch(type) {
-        case "subscribe": return "✅ Klik tombol SUBSCRIBE (berwarna merah)";
-        case "like": return "👍 Klik tombol LIKE (jempol)";
-        case "like_comment": return "👍 Klik LIKE + tulis komentar";
-        case "join": return "🎮 Klik 'Accept Invite' atau 'Join Server'";
-        case "notify": return "🔔 Klik lonceng → pilih 'Semua notifikasi'";
-        default: return "✅ Selesaikan aksi yang diminta";
-    }
-}
-
 function updateProgress() {
     const displayButtons = getDisplayButtons();
     let total = displayButtons.length;
@@ -352,12 +350,24 @@ function updateProgress() {
     }
 }
 
-// ========== ADMIN SAVE (Publikasi perubahan) ==========
+// ========== ADMIN SAVE (Publikasi perubahan ke semua user) ==========
 function saveAllChanges() {
-    saveMasterButtons();
-    // Reset userCompleted untuk semua user? Biarkan saja, user tetap punya progress lama
-    // Tapi jika button berubah, user harus ulang untuk button baru
-    alert("✅ Semua perubahan telah disimpan!\n\n- Link button baru akan terlihat oleh semua user\n- Button yang dihapus tidak akan muncul lagi\n- User tetap memiliki progress untuk button yang masih ada");
+    saveMasterButtonsToLocal();
+    // Reset userCompleted untuk button yang dihapus? Biarkan saja
+    // Tapi bersihkan userCompleted untuk button yang sudah tidak ada
+    const existingIds = new Set(masterButtons.map(b => b.id));
+    let changed = false;
+    Object.keys(userCompleted).forEach(id => {
+        if(!existingIds.has(id)) {
+            delete userCompleted[id];
+            changed = true;
+        }
+    });
+    if(changed) {
+        localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
+    }
+    
+    alert("✅ Semua perubahan telah disimpan dan dipublikasikan!\n\n- Semua user sekarang akan melihat button terbaru\n- Link button sudah diperbarui\n- Progress user tetap tersimpan untuk button yang masih ada");
     render();
 }
 
@@ -452,7 +462,6 @@ function login(username, password) {
 }
 
 function logout() {
-    // Hentikan semua timer
     Object.keys(activeTimers).forEach(timerId => {
         if(activeTimers[timerId]) clearInterval(activeTimers[timerId]);
     });
