@@ -11,9 +11,11 @@
 body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#fff}
 .video-bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-2;filter:brightness(0.35)}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,rgba(0,0,0,0.5),rgba(0,0,0,0.85));z-index:-1}
-.container{max-width:650px;margin:0 auto;padding:2rem 1.5rem 3rem;position:relative;z-index:10}
+.container{max-width:700px;margin:0 auto;padding:2rem 1.5rem 3rem;position:relative;z-index:10}
 .profile{text-align:center;margin-bottom:1.8rem}
-.avatar{width:90px;height:90px;background:linear-gradient(135deg,#ff416c,#ff4b2b);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:2.8rem;box-shadow:0 10px 25px rgba(0,0,0,0.3)}
+.avatar{width:100px;height:100px;background:linear-gradient(135deg,#ff416c,#ff4b2b);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:3rem;box-shadow:0 10px 25px rgba(0,0,0,0.3);overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar i{font-size:3rem}
 .username{font-size:1.6rem;font-weight:700;background:linear-gradient(120deg,#fff,#ffcc80);-webkit-background-clip:text;background-clip:text;color:transparent}
 .handle{font-size:0.9rem;color:#bbb;margin-top:4px}
 .progress-card{background:rgba(20,20,30,0.7);backdrop-filter:blur(12px);border-radius:28px;padding:1.5rem;margin-bottom:2rem;text-align:center;border:1px solid rgba(255,255,255,0.1)}
@@ -24,36 +26,62 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 .progress-fill{width:0%;height:100%;background:linear-gradient(90deg,#f7971e,#ffd200);transition:width 0.3s}
 .unlock-btn{background:linear-gradient(95deg,#00c6fb,#005bea);border:none;padding:12px 20px;border-radius:60px;font-weight:bold;font-size:1.1rem;width:100%;cursor:pointer;color:white;margin-top:10px}
 .unlock-btn.disabled{opacity:0.6;cursor:not-allowed}
-.section-title{font-size:1.2rem;font-weight:600;margin:25px 0 15px;border-left:4px solid #ffb347;padding-left:15px}
+.section-title{font-size:1.2rem;font-weight:600;margin:25px 0 15px;border-left:4px solid #ffb347;padding-left:15px;display:flex;justify-content:space-between;align-items:center}
 .button-grid{display:grid;grid-template-columns:1fr;gap:12px}
-.action-card{background:rgba(15,15,25,0.8);backdrop-filter:blur(10px);border-radius:20px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:0.2s;border:1px solid rgba(255,255,255,0.1)}
-.action-card:hover{background:rgba(35,35,55,0.9);border-color:#ffaa44;transform:translateX(5px)}
-.action-left{display:flex;align-items:center;gap:14px}
+.action-card{background:rgba(15,15,25,0.8);backdrop-filter:blur(10px);border-radius:20px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;transition:0.2s;border:1px solid rgba(255,255,255,0.1)}
+.action-card.user-mode{cursor:pointer}
+.action-card.user-mode:hover{background:rgba(35,35,55,0.9);border-color:#ffaa44;transform:translateX(5px)}
+.action-left{display:flex;align-items:center;gap:14px;flex:1}
 .action-left i{font-size:1.6rem;width:32px;color:#ffaa44}
 .action-info h4{font-size:1rem;font-weight:600}
 .action-info p{font-size:0.7rem;color:#aaa}
+.action-info .link-url{font-size:0.65rem;color:#ffaa44;margin-top:2px;word-break:break-all}
 .check-circle{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center}
 .check-circle.completed{background:#2ecc71;color:white}
-.add-panel{background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);border-radius:24px;padding:1rem;margin-top:30px;border:1px solid rgba(255,215,0,0.3)}
+.add-panel,.settings-panel{background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);border-radius:24px;padding:1rem;margin-top:15px;border:1px solid rgba(255,215,0,0.3)}
 .input-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 .input-row input,.input-row select{flex:1;padding:10px 15px;border-radius:40px;border:none;background:#1e1e2a;color:white}
 .input-row button{background:#ffb347;border:none;padding:0 20px;border-radius:40px;font-weight:bold;cursor:pointer}
 .warning{font-size:0.7rem;color:#ffaa88;margin-top:8px}
 .footer{text-align:center;font-size:0.7rem;margin-top:25px;color:#aaa}
+.login-bar{background:rgba(0,0,0,0.6);border-radius:30px;padding:10px 15px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.login-bar input{padding:8px 15px;border-radius:30px;border:none;background:#1e1e2a;color:white}
+.login-bar button{background:#ffb347;border:none;padding:8px 20px;border-radius:30px;cursor:pointer;font-weight:bold}
+.user-info{font-size:0.8rem}
+.logout-btn{background:#ff4444;color:white}
+.admin-badge{background:#ff9800;padding:2px 8px;border-radius:20px;font-size:0.7rem}
+.edit-link-btn{background:#2196F3;border:none;padding:4px 12px;border-radius:20px;font-size:0.7rem;cursor:pointer;margin-left:10px}
 @media (max-width:500px){.container{padding:1.2rem}}
 </style>
 </head>
 <body>
-<video class="video-bg" autoplay loop muted playsinline>
+<video id="bgVideo" class="video-bg" autoplay loop muted playsinline>
+<source src="bg.mp4" type="video/mp4">
 <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-particles-flowing-in-the-dark-3283-large.mp4" type="video/mp4">
 </video>
 <div class="overlay"></div>
 <div class="container">
 <div class="profile">
-<div class="avatar"><i class="fas fa-crown"></i></div>
+<div class="avatar" id="avatarContainer">
+<i class="fas fa-crown"></i>
+</div>
 <div class="username">JOY WARDANA</div>
 <div class="handle">@JoyWardanaa</div>
 </div>
+
+<div id="loginPanel" class="login-bar">
+<span><i class="fas fa-user-lock"></i> Login Admin</span>
+<div>
+<input type="text" id="loginUser" placeholder="Username" autocomplete="off">
+<input type="password" id="loginPass" placeholder="Password">
+<button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+</div>
+</div>
+<div id="userInfoPanel" class="login-bar" style="display:none">
+<span id="userRoleText"><i class="fas fa-user"></i> Mode: <span id="roleName">User</span></span>
+<button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+</div>
+
 <div class="progress-card">
 <div class="steps-text">Clear every step below — then unlock.</div>
 <div class="steps-count"><span id="completedCount">0</span> / <span id="totalCount">0</span> done</div>
@@ -61,10 +89,16 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 <button id="unlockBtn" class="unlock-btn disabled">🔒 Locked • Complete steps</button>
 <div style="font-size:0.7rem; margin-top:8px;">Best for creators with active traffic</div>
 </div>
-<div class="section-title"><i class="fas fa-list-check"></i> Complete actions</div>
+
+<div class="section-title">
+<span><i class="fas fa-list-check"></i> Complete actions</span>
+<span id="adminPanelIndicator" style="display:none"><i class="fas fa-crown"></i> Admin Mode</span>
+</div>
 <div id="buttonsContainer" class="button-grid"></div>
-<div class="add-panel">
-<div><i class="fas fa-plus-circle"></i> Tambah Button (Max 8)</div>
+
+<!-- Panel Admin: Tambah Button & Setting Redirect -->
+<div id="adminAddPanel" class="add-panel" style="display:none">
+<div><i class="fas fa-plus-circle"></i> Tambah Button Baru (Max 8)</div>
 <div class="input-row">
 <input type="text" id="newName" placeholder="Nama tombol" value="Subscribe Channel">
 <select id="newIcon">
@@ -74,32 +108,422 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 <option value="fas fa-heart">❤️ Like+Comment</option>
 <option value="fas fa-bell">🔔 Notify</option>
 <option value="fab fa-twitter">🐦 Twitter</option>
+<option value="fab fa-instagram">📸 Instagram</option>
+<option value="fab fa-tiktok">🎵 TikTok</option>
 </select>
 <button id="addBtn">+ Tambah</button>
 </div>
 <div class="warning" id="maxWarning" style="display:none;">⚠️ Maksimal 8 button!</div>
-<div class="warning">💡 Klik card = tandai selesai + buka link (jika ada)</div>
 </div>
-<div class="footer"><i class="fas fa-link"></i> Create your own link setelah semua selesai</div>
+
+<!-- Setting Redirect Link (Admin) -->
+<div id="adminSettingsPanel" class="settings-panel" style="display:none">
+<div><i class="fas fa-link"></i> Setting Link Tujuan (Setelah Unlock)</div>
+<div class="input-row">
+<input type="text" id="redirectUrlInput" placeholder="https://tujuan.com/link" value="https://lynk.id/joywardana">
+<button id="saveRedirectBtn">Simpan Link Tujuan</button>
 </div>
+<div class="warning">💡 User akan diarahkan ke link ini setelah semua aksi selesai</div>
+</div>
+
+<!-- Panel Setting Background & Avatar (Admin) -->
+<div id="adminMediaPanel" class="settings-panel" style="display:none">
+<div><i class="fas fa-image"></i> Setting Media (Local Files)</div>
+<div class="input-row">
+<input type="text" id="bgVideoInput" placeholder="bg.mp4" value="bg.mp4">
+<button id="setBgBtn">Set Background Video</button>
+</div>
+<div class="input-row">
+<input type="text" id="avatarInput" placeholder="fav.png atau avatar.png" value="">
+<button id="setAvatarBtn">Set Avatar Image</button>
+</div>
+<div class="warning">📁 Letakkan file di folder yang sama: bg.mp4, fav.png</div>
+</div>
+
+<div class="footer"><i class="fas fa-link"></i> Selesaikan semua aksi untuk unlock link | Admin bisa edit semua link</div>
+</div>
+
 <script>
+// ========== KONFIGURASI ==========
+const ADMIN_USER = "JoyExelWardana-jyz";
+const ADMIN_PASS = "JoyExelWardana-jyz4121#";
+
+// Data buttons dengan link bisa diedit
 let buttons = [
-{id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1"},
-{id:"b2",name:"Like Video",icon:"fas fa-thumbs-up",completed:false,url:"#"},
-{id:"b3",name:"Like & Comment",icon:"fas fa-comment-dots",completed:false,url:"#"},
-{id:"b4",name:"Join Discord Server",icon:"fab fa-discord",completed:false,url:"https://discord.gg/example"},
-{id:"b5",name:"Enable Notifications",icon:"fas fa-bell",completed:false,url:"#"},
-{id:"b6",name:"Subscribe & Bell",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1"}
+{id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe",channelId:"JoyWardanaa"},
+{id:"b2",name:"Like Video",icon:"fas fa-thumbs-up",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like"},
+{id:"b3",name:"Like & Comment",icon:"fas fa-comment-dots",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like_comment"},
+{id:"b4",name:"Join Discord Server",icon:"fab fa-discord",completed:false,url:"https://discord.gg/example",type:"join"},
+{id:"b5",name:"Enable Notifications",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa",type:"notify"},
+{id:"b6",name:"Subscribe & Bell",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe_bell",channelId:"JoyWardanaa"}
 ];
 const MAX=8;
-function render(){const c=document.getElementById('buttonsContainer');if(!c)return;c.innerHTML='';buttons.forEach(btn=>{const card=document.createElement('div');card.className='action-card';card.setAttribute('data-id',btn.id);card.onclick=(e)=>{e.stopPropagation();toggleComplete(btn.id);};const left=document.createElement('div');left.className='action-left';const icon=document.createElement('i');icon.className=btn.icon;const info=document.createElement('div');info.className='action-info';info.innerHTML=`<h4>${btn.name}</h4><p>${btn.url!=='#'?'Klik verifikasi':'Tandai selesai'}</p>`;left.appendChild(icon);left.appendChild(info);const checkDiv=document.createElement('div');checkDiv.className='check-circle';if(btn.completed){checkDiv.classList.add('completed');checkDiv.innerHTML='<i class="fas fa-check"></i>';}else{checkDiv.innerHTML='<i class="far fa-circle"></i>';}card.appendChild(left);card.appendChild(checkDiv);c.appendChild(card);});updateProgress();}
-function toggleComplete(id){const idx=buttons.findIndex(b=>b.id===id);if(idx===-1)return;buttons[idx].completed=!buttons[idx].completed;const btn=buttons[idx];if(btn.url&&btn.url!=="#"){window.open(btn.url,'_blank');}render();}
-function updateProgress(){const total=buttons.length;const completed=buttons.filter(b=>b.completed).length;document.getElementById('completedCount').innerText=completed;document.getElementById('totalCount').innerText=total;const percent=total===0?0:(completed/total)*100;document.getElementById('progressFill').style.width=`${percent}%`;const unlockBtn=document.getElementById('unlockBtn');if(completed===total&&total>0){unlockBtn.classList.remove('disabled');unlockBtn.innerText='🔓 UNLOCK LINK → Create your own link';}else{unlockBtn.classList.add('disabled');unlockBtn.innerText='🔒 Locked • Complete all steps';}}
-function addNewButton(){if(buttons.length>=MAX){const warn=document.getElementById('maxWarning');warn.style.display='block';setTimeout(()=>warn.style.display='none',2000);return;}const nameInput=document.getElementById('newName');const iconSelect=document.getElementById('newIcon');let newName=nameInput.value.trim();if(newName==="")newName="Action Item";const selectedIcon=iconSelect.value;let defaultUrl="#";if(selectedIcon.includes('youtube'))defaultUrl="https://www.youtube.com/@JoyWardanaa?sub_confirmation=1";else if(selectedIcon.includes('discord'))defaultUrl="https://discord.gg/invite/example";else if(selectedIcon.includes('twitter'))defaultUrl="https://twitter.com/JoyWardanaa";else defaultUrl="#";const newId="btn_"+Date.now()+"_"+Math.floor(Math.random()*999);buttons.push({id:newId,name:newName,icon:selectedIcon,completed:false,url:defaultUrl});render();nameInput.value="";document.getElementById('maxWarning').style.display='none';}
-function handleUnlock(){const total=buttons.length;const completed=buttons.filter(b=>b.completed).length;if(completed===total&&total>0){const confirmUnlock=confirm("✅ Semua step selesai! Buat link kustommu?");if(confirmUnlock){let customLink=prompt("Masukkan URL tujuanmu (contoh: https://lynk.id/kamu):","https://s.id/linkkreator");if(customLink&&customLink.trim()!==""){if(!customLink.startsWith("http"))customLink="https://"+customLink;window.open(customLink,'_blank');alert("Link kustom terbuka! Selamat!");}else{alert("Link tidak valid, tapi kamu sudah menyelesaikan misi!");}}}else{alert(`Masih ada ${total-completed} aksi yang belum diselesaikan!`);}}
-document.getElementById('unlockBtn').addEventListener('click',handleUnlock);
-document.getElementById('addBtn').addEventListener('click',addNewButton);
-render();
+let currentUser = null;
+let userCompleted = JSON.parse(localStorage.getItem('userCompleted')) || {};
+let redirectTargetUrl = localStorage.getItem('redirectTargetUrl') || "https://lynk.id/joywardana";
+
+// ========== FUNGSI VERIFIKASI ==========
+function verifyAction(btn, callback) {
+    let message = "";
+    switch(btn.type) {
+        case "subscribe":
+        case "subscribe_bell":
+            message = `⚠️ VERIFIKASI SUBSCRIBE ⚠️\n\n1. Buka link: ${btn.url}\n2. Klik tombol SUBSCRIBE\n3. Setelah subscribe, klik OK untuk verifikasi\n\nApakah Anda sudah subscribe ke channel ini?`;
+            break;
+        case "like":
+            message = `⚠️ VERIFIKASI LIKE ⚠️\n\n1. Buka link: ${btn.url}\n2. Klik tombol LIKE (👍)\n3. Setelah like, klik OK untuk verifikasi\n\nApakah Anda sudah like video tersebut?`;
+            break;
+        case "like_comment":
+            message = `⚠️ VERIFIKASI LIKE & COMMENT ⚠️\n\n1. Buka link: ${btn.url}\n2. Like video (👍)\n3. Tulis komentar positif\n4. Setelah selesai, klik OK untuk verifikasi\n\nApakah Anda sudah like dan comment?`;
+            break;
+        case "join":
+            message = `⚠️ VERIFIKASI JOIN DISCORD ⚠️\n\n1. Buka link: ${btn.url}\n2. Klik "Accept Invite" / "Join Server"\n3. Setelah join, klik OK untuk verifikasi\n\nApakah Anda sudah join server Discord?`;
+            break;
+        case "notify":
+            message = `⚠️ VERIFIKASI NOTIFIKASI ⚠️\n\n1. Buka link: ${btn.url}\n2. Klik ikon lonceng (🔔) di channel\n3. Pilih "Semua notifikasi"\n4. Setelah aktif, klik OK untuk verifikasi\n\nApakah Anda sudah mengaktifkan notifikasi?`;
+            break;
+        default:
+            message = `Verifikasi: Apakah Anda sudah menyelesaikan "${btn.name}"?\n\nLink: ${btn.url}`;
+    }
+    
+    if(confirm(message)) {
+        window.open(btn.url, '_blank');
+        setTimeout(() => {
+            if(confirm("✅ KONFIRMASI AKHIR ✅\n\nApakah Anda YAKIN sudah menyelesaikan aksi ini?\n(Tekan OK untuk tandai selesai)")) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        }, 500);
+    } else {
+        alert("❌ Aksi belum selesai! Selesaikan dulu lalu verifikasi lagi.");
+        callback(false);
+    }
+}
+
+// ========== RENDER BUTTONS ==========
+function render() {
+    const container = document.getElementById('buttonsContainer');
+    if(!container) return;
+    container.innerHTML = '';
+    const isAdmin = (currentUser === 'admin');
+    
+    buttons.forEach(btn => {
+        const card = document.createElement('div');
+        card.className = 'action-card';
+        
+        const left = document.createElement('div');
+        left.className = 'action-left';
+        const icon = document.createElement('i');
+        icon.className = btn.icon;
+        const info = document.createElement('div');
+        info.className = 'action-info';
+        
+        let isCompleted = false;
+        if(isAdmin) {
+            isCompleted = btn.completed;
+        } else {
+            isCompleted = userCompleted[btn.id] || false;
+        }
+        
+        info.innerHTML = `<h4>${btn.name}</h4><p>Klik untuk verifikasi</p><div class="link-url">🔗 ${btn.url.length > 40 ? btn.url.substring(0,40)+'...' : btn.url}</div>`;
+        left.appendChild(icon);
+        left.appendChild(info);
+        
+        // Tombol edit link (hanya untuk admin)
+        if(isAdmin) {
+            const editBtn = document.createElement('button');
+            editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Link';
+            editBtn.className = 'edit-link-btn';
+            editBtn.onclick = (e) => {
+                e.stopPropagation();
+                const newUrl = prompt(`Edit link untuk "${btn.name}":`, btn.url);
+                if(newUrl && newUrl.trim() !== "") {
+                    btn.url = newUrl.trim();
+                    render();
+                    saveButtonsToLocal();
+                }
+            };
+            left.appendChild(editBtn);
+        }
+        
+        const checkDiv = document.createElement('div');
+        checkDiv.className = 'check-circle';
+        if(isCompleted) {
+            checkDiv.classList.add('completed');
+            checkDiv.innerHTML = '<i class="fas fa-check"></i>';
+        } else {
+            checkDiv.innerHTML = '<i class="far fa-circle"></i>';
+        }
+        card.appendChild(left);
+        card.appendChild(checkDiv);
+        
+        if(isAdmin) {
+            card.style.cursor = 'pointer';
+            card.onclick = (e) => {
+                if(e.target.classList.contains('edit-link-btn')) return;
+                e.stopPropagation();
+                btn.completed = !btn.completed;
+                render();
+                saveButtonsToLocal();
+            };
+        } else {
+            card.style.cursor = 'pointer';
+            card.onclick = (e) => {
+                e.stopPropagation();
+                if(userCompleted[btn.id]) {
+                    alert("✅ Aksi sudah selesai! Tidak bisa diubah.");
+                    return;
+                }
+                verifyAction(btn, (success) => {
+                    if(success) {
+                        userCompleted[btn.id] = true;
+                        localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
+                        render();
+                    }
+                });
+            };
+        }
+        container.appendChild(card);
+    });
+    updateProgress();
+}
+
+function updateProgress() {
+    const isAdmin = (currentUser === 'admin');
+    let total = buttons.length;
+    let completed = 0;
+    if(isAdmin) {
+        completed = buttons.filter(b => b.completed).length;
+    } else {
+        completed = buttons.filter(b => userCompleted[b.id] === true).length;
+    }
+    document.getElementById('completedCount').innerText = completed;
+    document.getElementById('totalCount').innerText = total;
+    const percent = total === 0 ? 0 : (completed / total) * 100;
+    document.getElementById('progressFill').style.width = `${percent}%`;
+    const unlockBtn = document.getElementById('unlockBtn');
+    if(completed === total && total > 0) {
+        unlockBtn.classList.remove('disabled');
+        unlockBtn.innerText = '🔓 UNLOCK LINK → Lanjut ke tujuan';
+    } else {
+        unlockBtn.classList.add('disabled');
+        unlockBtn.innerText = '🔒 Locked • Selesaikan semua aksi';
+    }
+}
+
+function saveButtonsToLocal() {
+    if(currentUser === 'admin') {
+        localStorage.setItem('adminButtons', JSON.stringify(buttons));
+    }
+}
+
+function loadButtonsFromLocal() {
+    const saved = localStorage.getItem('adminButtons');
+    if(saved) {
+        try {
+            buttons = JSON.parse(saved);
+        } catch(e) {}
+    }
+}
+
+// ========== ADMIN FUNGSI ==========
+function addNewButton() {
+    if(buttons.length >= MAX) {
+        const warn = document.getElementById('maxWarning');
+        warn.style.display = 'block';
+        setTimeout(() => warn.style.display = 'none', 2000);
+        return;
+    }
+    const nameInput = document.getElementById('newName');
+    const iconSelect = document.getElementById('newIcon');
+    let newName = nameInput.value.trim();
+    if(newName === "") newName = "Action Item";
+    const selectedIcon = iconSelect.value;
+    let defaultUrl = "#";
+    let type = "custom";
+    if(selectedIcon.includes('youtube')) { defaultUrl = "https://www.youtube.com/@JoyWardanaa"; type = "subscribe"; }
+    else if(selectedIcon.includes('discord')) { defaultUrl = "https://discord.gg/invite/example"; type = "join"; }
+    else if(selectedIcon.includes('twitter')) { defaultUrl = "https://twitter.com/JoyWardanaa"; type = "follow"; }
+    else if(selectedIcon.includes('thumbs-up')) { defaultUrl = "https://www.youtube.com/watch?v=example"; type = "like"; }
+    else if(selectedIcon.includes('heart')) { defaultUrl = "https://www.youtube.com/watch?v=example"; type = "like_comment"; }
+    else if(selectedIcon.includes('bell')) { defaultUrl = "https://www.youtube.com/@JoyWardanaa"; type = "notify"; }
+    else if(selectedIcon.includes('instagram')) { defaultUrl = "https://instagram.com/joywardana"; type = "follow"; }
+    else if(selectedIcon.includes('tiktok')) { defaultUrl = "https://tiktok.com/@joywardana"; type = "follow"; }
+    
+    const newId = "btn_"+Date.now()+"_"+Math.floor(Math.random()*999);
+    buttons.push({
+        id:newId, name:newName, icon:selectedIcon,
+        completed:false, url:defaultUrl, type:type
+    });
+    render();
+    saveButtonsToLocal();
+    nameInput.value = "";
+    document.getElementById('maxWarning').style.display = 'none';
+}
+
+// ========== UNLOCK & REDIRECT ==========
+function handleUnlock() {
+    const isAdmin = (currentUser === 'admin');
+    let total = buttons.length;
+    let completed = 0;
+    if(isAdmin) {
+        completed = buttons.filter(b => b.completed).length;
+    } else {
+        completed = buttons.filter(b => userCompleted[b.id] === true).length;
+    }
+    if(completed === total && total > 0) {
+        alert("🎉 SELAMAT! 🎉\nAnda telah menyelesaikan semua aksi!\nAkan diarahkan ke link tujuan.");
+        window.location.href = redirectTargetUrl;
+    } else {
+        alert(`❌ Belum selesai! ${completed} dari ${total} aksi sudah dikerjakan. Selesaikan semua dulu!`);
+    }
+}
+
+// ========== SETTINGS ==========
+function saveRedirectUrl() {
+    const newUrl = document.getElementById('redirectUrlInput').value.trim();
+    if(newUrl) {
+        redirectTargetUrl = newUrl;
+        localStorage.setItem('redirectTargetUrl', redirectTargetUrl);
+        alert("✅ Link tujuan berhasil disimpan!");
+    }
+}
+
+function setBackgroundVideo() {
+    const videoPath = document.getElementById('bgVideoInput').value.trim();
+    if(videoPath) {
+        const video = document.getElementById('bgVideo');
+        const source = video.querySelector('source');
+        source.src = videoPath;
+        video.load();
+        localStorage.setItem('bgVideoPath', videoPath);
+        alert("✅ Background video updated!");
+    }
+}
+
+function setAvatarImage() {
+    const avatarPath = document.getElementById('avatarInput').value.trim();
+    const avatarContainer = document.getElementById('avatarContainer');
+    if(avatarPath) {
+        avatarContainer.innerHTML = `<img src="${avatarPath}" alt="avatar" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\'fas fa-crown\'></i>';">`;
+        localStorage.setItem('avatarPath', avatarPath);
+        alert("✅ Avatar updated! (Pastikan file ada di folder yang sama)");
+    } else {
+        avatarContainer.innerHTML = '<i class="fas fa-crown"></i>';
+        localStorage.removeItem('avatarPath');
+    }
+}
+
+function loadMediaSettings() {
+    const savedBg = localStorage.getItem('bgVideoPath');
+    if(savedBg) {
+        document.getElementById('bgVideoInput').value = savedBg;
+        const video = document.getElementById('bgVideo');
+        const source = video.querySelector('source');
+        source.src = savedBg;
+        video.load();
+    }
+    const savedAvatar = localStorage.getItem('avatarPath');
+    if(savedAvatar) {
+        document.getElementById('avatarInput').value = savedAvatar;
+        document.getElementById('avatarContainer').innerHTML = `<img src="${savedAvatar}" alt="avatar" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\'fas fa-crown\'></i>';">`;
+    }
+}
+
+// ========== LOGIN SYSTEM ==========
+function login(username, password) {
+    if(username === ADMIN_USER && password === ADMIN_PASS) {
+        currentUser = 'admin';
+        localStorage.setItem('currentUser', 'admin');
+        loadButtonsFromLocal();
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('userInfoPanel').style.display = 'flex';
+        document.getElementById('roleName').innerText = 'Admin (bisa edit semua)';
+        document.getElementById('adminAddPanel').style.display = 'block';
+        document.getElementById('adminSettingsPanel').style.display = 'block';
+        document.getElementById('adminMediaPanel').style.display = 'block';
+        document.getElementById('adminPanelIndicator').style.display = 'inline';
+        document.getElementById('redirectUrlInput').value = redirectTargetUrl;
+        render();
+        return true;
+    } else if(username !== "" && password !== "") {
+        currentUser = 'user';
+        localStorage.setItem('currentUser', 'user');
+        localStorage.setItem('userName', username);
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('userInfoPanel').style.display = 'flex';
+        document.getElementById('roleName').innerHTML = `User: ${username} (klik card & verifikasi)`;
+        document.getElementById('adminAddPanel').style.display = 'none';
+        document.getElementById('adminSettingsPanel').style.display = 'none';
+        document.getElementById('adminMediaPanel').style.display = 'none';
+        document.getElementById('adminPanelIndicator').style.display = 'none';
+        render();
+        return true;
+    }
+    return false;
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userName');
+    document.getElementById('loginPanel').style.display = 'flex';
+    document.getElementById('userInfoPanel').style.display = 'none';
+    document.getElementById('adminAddPanel').style.display = 'none';
+    document.getElementById('adminSettingsPanel').style.display = 'none';
+    document.getElementById('adminMediaPanel').style.display = 'none';
+    document.getElementById('adminPanelIndicator').style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    render();
+}
+
+function checkSession() {
+    const savedUser = localStorage.getItem('currentUser');
+    if(savedUser === 'admin') {
+        currentUser = 'admin';
+        loadButtonsFromLocal();
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('userInfoPanel').style.display = 'flex';
+        document.getElementById('roleName').innerText = 'Admin (bisa edit semua)';
+        document.getElementById('adminAddPanel').style.display = 'block';
+        document.getElementById('adminSettingsPanel').style.display = 'block';
+        document.getElementById('adminMediaPanel').style.display = 'block';
+        document.getElementById('adminPanelIndicator').style.display = 'inline';
+        document.getElementById('redirectUrlInput').value = redirectTargetUrl;
+        render();
+    } else if(savedUser === 'user') {
+        currentUser = 'user';
+        document.getElementById('loginPanel').style.display = 'none';
+        document.getElementById('userInfoPanel').style.display = 'flex';
+        document.getElementById('roleName').innerHTML = `User: ${localStorage.getItem('userName') || 'Guest'} (klik card & verifikasi)`;
+        document.getElementById('adminAddPanel').style.display = 'none';
+        document.getElementById('adminSettingsPanel').style.display = 'none';
+        document.getElementById('adminMediaPanel').style.display = 'none';
+        document.getElementById('adminPanelIndicator').style.display = 'none';
+        render();
+    } else {
+        currentUser = null;
+        render();
+    }
+}
+
+// ========== EVENT LISTENER ==========
+document.getElementById('loginBtn').addEventListener('click', () => {
+    const user = document.getElementById('loginUser').value;
+    const pass = document.getElementById('loginPass').value;
+    login(user, pass);
+});
+document.getElementById('logoutBtn').addEventListener('click', logout);
+document.getElementById('unlockBtn').addEventListener('click', handleUnlock);
+document.getElementById('addBtn').addEventListener('click', addNewButton);
+document.getElementById('saveRedirectBtn').addEventListener('click', saveRedirectUrl);
+document.getElementById('setBgBtn').addEventListener('click', setBackgroundVideo);
+document.getElementById('setAvatarBtn').addEventListener('click', setAvatarImage);
+
+loadMediaSettings();
+checkSession();
 </script>
 </body>
 </html>
