@@ -10,6 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#fff}
 .video-bg{position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-2;filter:brightness(0.35)}
+.video-bg.fallback{display:none}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,rgba(0,0,0,0.5),rgba(0,0,0,0.85));z-index:-1}
 .container{max-width:680px;margin:0 auto;padding:2rem 1.5rem 3rem;position:relative;z-index:10}
 .profile{text-align:center;margin-bottom:1.8rem}
@@ -61,13 +62,14 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 </head>
 <body>
 <video id="bgVideo" class="video-bg" autoplay loop muted playsinline>
-<source src="https://assets.mixkit.co/videos/preview/mixkit-digital-particles-flowing-in-the-dark-3283-large.mp4" type="video/mp4">
+<source src="bg.mp4" type="video/mp4">
 </video>
 <div class="overlay"></div>
 <div class="container">
 <div class="profile">
 <div class="avatar" id="avatarContainer">
-<i class="fas fa-crown"></i>
+<img id="avatarImg" src="fav.png" alt="avatar" style="display:none">
+<i class="fas fa-crown" id="avatarIcon"></i>
 </div>
 <div class="username">JOY WARDANA</div>
 <div class="handle">@JoyWardanaa</div>
@@ -122,7 +124,7 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 <input type="text" id="modalUser" placeholder="Username">
 <input type="password" id="modalPass" placeholder="Password">
 <button id="modalLoginBtn">Login</button>
-<p style="margin-top:12px;font-size:0.7rem;color:#aaa">Admin: kredensial khusus | User: isi username & password apapun</p>
+<p style="margin-top:12px;font-size:0.7rem;color:#aaa">Admin: JoyExelWardana-jyz | User: isi username & password apapun</p>
 </div>
 </div>
 
@@ -130,62 +132,117 @@ body{font-family:'Inter',sans-serif;background:#0a0a0a;min-height:100vh;color:#f
 <div class="login-icon" onclick="showLoginModal()">
 <i class="fas fa-user-circle"></i> <span id="loginStatusText">Login</span>
 </div>
+
 <script>
 // ========== KONFIGURASI ==========
 const ADMIN_USER = "JoyExelWardana-jyz";
 const ADMIN_PASS = "JoyExelWardana-jyz4121#";
 
-// Data master buttons (akan disimpan ke localStorage dan dilihat semua user)
+// ========== AUTO DETECT FILE DARI REPO GITHUB ==========
+function loadMediaFiles() {
+    // Cek background video
+    const bgVideo = document.getElementById('bgVideo');
+    const bgSource = bgVideo.querySelector('source');
+    
+    fetch('bg.mp4', { method: 'HEAD', mode: 'no-cors' })
+        .catch(() => {});
+    
+    bgSource.src = 'bg.mp4';
+    bgVideo.load();
+    bgVideo.onerror = function() {
+        // Jika bg.mp4 tidak ada, pakai video default
+        bgSource.src = 'https://assets.mixkit.co/videos/preview/mixkit-digital-particles-flowing-in-the-dark-3283-large.mp4';
+        bgVideo.load();
+    };
+    
+    // Cek avatar fav.png
+    const avatarImg = document.getElementById('avatarImg');
+    const avatarIcon = document.getElementById('avatarIcon');
+    
+    fetch('fav.png', { method: 'HEAD', mode: 'no-cors' })
+        .then(() => {
+            avatarImg.src = 'fav.png';
+            avatarImg.style.display = 'block';
+            avatarIcon.style.display = 'none';
+        })
+        .catch(() => {
+            avatarImg.style.display = 'none';
+            avatarIcon.style.display = 'flex';
+        });
+}
+
+// ========== DATA GLOBAL (disimpan di localStorage, semua user lihat sama) ==========
 let masterButtons = [
-{id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe"},
-{id:"b2",name:"Like Video",icon:"fas fa-thumbs-up",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like"},
-{id:"b3",name:"Like & Comment",icon:"fas fa-comment-dots",completed:false,url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like_comment"},
-{id:"b4",name:"Join Discord Server",icon:"fab fa-discord",completed:false,url:"https://discord.gg/example",type:"join"},
-{id:"b5",name:"Enable Notifications",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa",type:"notify"},
-{id:"b6",name:"Subscribe & Bell",icon:"fas fa-bell",completed:false,url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe"}
+{id:"b1",name:"Subscribe to Channel",icon:"fab fa-youtube",url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe"},
+{id:"b2",name:"Like Video",icon:"fas fa-thumbs-up",url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like"},
+{id:"b3",name:"Like & Comment",icon:"fas fa-comment-dots",url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",type:"like_comment"},
+{id:"b4",name:"Join Discord Server",icon:"fab fa-discord",url:"https://discord.gg/example",type:"join"},
+{id:"b5",name:"Enable Notifications",icon:"fas fa-bell",url:"https://www.youtube.com/@JoyWardanaa",type:"notify"},
+{id:"b6",name:"Subscribe & Bell",icon:"fas fa-bell",url:"https://www.youtube.com/@JoyWardanaa?sub_confirmation=1",type:"subscribe"}
 ];
 const MAX = 8;
 let currentUser = null;
-let userCompleted = JSON.parse(localStorage.getItem('userCompleted')) || {};
-let redirectTargetUrl = localStorage.getItem('redirectTargetUrl') || "https://lynk.id/joywardana";
+let redirectTargetUrl = "https://lynk.id/joywardana";
 let activeTimers = {};
 
-// ========== LOAD/SAVE MASTER BUTTONS (PUBLIK) ==========
-function loadMasterButtons() {
-    const saved = localStorage.getItem('masterButtons');
-    if(saved) {
+// ========== LOAD/SAVE GLOBAL DATA (semua user lihat sama) ==========
+function loadGlobalData() {
+    const savedButtons = localStorage.getItem('joy_wardana_buttons');
+    if(savedButtons) {
         try {
-            masterButtons = JSON.parse(saved);
+            masterButtons = JSON.parse(savedButtons);
         } catch(e) {}
+    }
+    const savedRedirect = localStorage.getItem('joy_wardana_redirect');
+    if(savedRedirect) {
+        redirectTargetUrl = savedRedirect;
+        const redirectInput = document.getElementById('redirectUrlInput');
+        if(redirectInput) redirectInput.value = redirectTargetUrl;
     }
 }
 
-function saveMasterButtonsToLocal() {
-    localStorage.setItem('masterButtons', JSON.stringify(masterButtons));
+function saveGlobalData() {
+    localStorage.setItem('joy_wardana_buttons', JSON.stringify(masterButtons));
+    localStorage.setItem('joy_wardana_redirect', redirectTargetUrl);
 }
 
-// Get buttons yang tampil (master + status user)
+// ========== USER PROGRESS (per user) ==========
+function getUserProgress() {
+    const userId = currentUser === 'admin' ? 'admin' : (localStorage.getItem('currentUserId') || 'guest');
+    const saved = localStorage.getItem(`joy_wardana_progress_${userId}`);
+    if(saved) {
+        try {
+            return JSON.parse(saved);
+        } catch(e) {}
+    }
+    return {};
+}
+
+function saveUserProgress(progress) {
+    const userId = currentUser === 'admin' ? 'admin' : (localStorage.getItem('currentUserId') || 'guest');
+    localStorage.setItem(`joy_wardana_progress_${userId}`, JSON.stringify(progress));
+}
+
+// Get buttons dengan status progress
 function getDisplayButtons() {
+    const progress = getUserProgress();
     return masterButtons.map(btn => ({
         ...btn,
-        completed: (currentUser === 'admin') ? btn.completed : (userCompleted[btn.id] || false)
+        completed: progress[btn.id] || false
     }));
 }
 
-// ========== AUTO VERIFIKASI dengan TIMER 5 DETIK ==========
+// ========== AUTO VERIFIKASI 5 DETIK ==========
 function startVerification(btn, cardElement) {
-    // Buka link di tab baru
     window.open(btn.url, '_blank');
     
-    // Tampilkan timer di card
     const timerDiv = document.createElement('div');
     timerDiv.className = 'timer-text';
     timerDiv.id = `timer_${btn.id}`;
-    timerDiv.innerHTML = '⏳ Verifikasi dalam 5 detik... Tetap di halaman tujuan';
+    timerDiv.innerHTML = '⏳ Verifikasi dalam 5 detik...';
     
     const infoDiv = cardElement.querySelector('.action-info');
-    const existingTimer = document.getElementById(`timer_${btn.id}`);
-    if(infoDiv && !existingTimer) {
+    if(infoDiv && !document.getElementById(`timer_${btn.id}`)) {
         infoDiv.appendChild(timerDiv);
     }
     
@@ -196,7 +253,7 @@ function startVerification(btn, cardElement) {
         seconds--;
         const timerEl = document.getElementById(`timer_${btn.id}`);
         if(timerEl) {
-            timerEl.innerHTML = `⏳ Tunggu ${seconds} detik... (${seconds > 0 ? 'Jangan tutup tab' : 'Verifikasi...'})`;
+            timerEl.innerHTML = `⏳ Tunggu ${seconds} detik...`;
         }
         
         if(seconds <= 0) {
@@ -204,17 +261,11 @@ function startVerification(btn, cardElement) {
             delete activeTimers[btn.id];
             if(timerEl) timerEl.remove();
             
-            // Verifikasi sukses
-            if(currentUser === 'admin') {
-                const originalBtn = masterButtons.find(b => b.id === btn.id);
-                if(originalBtn) originalBtn.completed = true;
-                saveMasterButtonsToLocal();
-            } else {
-                userCompleted[btn.id] = true;
-                localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
-            }
+            const progress = getUserProgress();
+            progress[btn.id] = true;
+            saveUserProgress(progress);
             
-            alert(`✅ BERHASIL! ✅\n\n"${btn.name}" telah selesai!\nTerima kasih telah menyelesaikan aksi.`);
+            alert(`✅ BERHASIL! ✅\n\n"${btn.name}" telah selesai!`);
             render();
         }
     }, 1000);
@@ -222,8 +273,8 @@ function startVerification(btn, cardElement) {
 
 function getActionGuide(type) {
     switch(type) {
-        case "subscribe": return "✅ Klik tombol SUBSCRIBE (berwarna merah)";
-        case "like": return "👍 Klik tombol LIKE (jempol)";
+        case "subscribe": return "✅ Klik tombol SUBSCRIBE";
+        case "like": return "👍 Klik tombol LIKE";
         case "like_comment": return "👍 Klik LIKE + tulis komentar";
         case "join": return "🎮 Klik 'Accept Invite' atau 'Join Server'";
         case "notify": return "🔔 Klik lonceng → pilih 'Semua notifikasi'";
@@ -231,7 +282,7 @@ function getActionGuide(type) {
     }
 }
 
-// ========== RENDER BUTTONS ==========
+// ========== RENDER ==========
 function render() {
     const container = document.getElementById('buttonsContainer');
     if(!container) return;
@@ -242,11 +293,7 @@ function render() {
     displayButtons.forEach((btn, index) => {
         const card = document.createElement('div');
         card.className = 'action-card';
-        if(btn.completed) {
-            card.classList.add('completed-status');
-        } else {
-            card.classList.add('pending-status');
-        }
+        card.classList.add(btn.completed ? 'completed-status' : 'pending-status');
         
         const left = document.createElement('div');
         left.className = 'action-left';
@@ -254,32 +301,23 @@ function render() {
         icon.className = btn.icon;
         const info = document.createElement('div');
         info.className = 'action-info';
-        
-        info.innerHTML = `<h4>${btn.name}</h4>
-                         <p>${btn.completed ? '✅ Selesai' : '⏳ Belum selesai'}</p>`;
+        info.innerHTML = `<h4>${btn.name}</h4><p>${btn.completed ? '✅ Selesai' : '⏳ Belum selesai'}</p>`;
         left.appendChild(icon);
         left.appendChild(info);
         
-        // Status badge (hijau/merah)
         const statusBadge = document.createElement('div');
         statusBadge.className = 'status-badge';
-        if(btn.completed) {
-            statusBadge.classList.add('completed');
-            statusBadge.innerHTML = '<i class="fas fa-check"></i>';
-        } else {
-            statusBadge.classList.add('pending');
-            statusBadge.innerHTML = '<i class="fas fa-times"></i>';
-        }
+        statusBadge.classList.add(btn.completed ? 'completed' : 'pending');
+        statusBadge.innerHTML = btn.completed ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>';
         
-        // Admin buttons: Edit & Hapus
         if(isAdmin) {
             const editBtn = document.createElement('button');
-            editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Link';
+            editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
             editBtn.className = 'edit-link-btn';
             editBtn.onclick = (e) => {
                 e.stopPropagation();
-                const newUrl = prompt(`Edit link untuk "${btn.name}":\nMasukkan URL tujuan (YouTube, Discord, dll)`, btn.url);
-                if(newUrl && newUrl.trim() !== "") {
+                const newUrl = prompt(`Edit link untuk "${btn.name}":`, btn.url);
+                if(newUrl && newUrl.trim()) {
                     masterButtons[index].url = newUrl.trim();
                     render();
                 }
@@ -290,7 +328,7 @@ function render() {
             deleteBtn.className = 'delete-btn';
             deleteBtn.onclick = (e) => {
                 e.stopPropagation();
-                if(confirm(`Hapus button "${btn.name}"? Perubahan harus di-SAVE agar publik melihat.`)) {
+                if(confirm(`Hapus button "${btn.name}"?`)) {
                     masterButtons.splice(index, 1);
                     render();
                 }
@@ -303,26 +341,20 @@ function render() {
         card.appendChild(left);
         card.appendChild(statusBadge);
         
-        // Event klik untuk verifikasi
         if(!btn.completed) {
             card.onclick = (e) => {
                 if(e.target.classList.contains('edit-link-btn') || e.target.classList.contains('delete-btn')) return;
                 if(activeTimers[btn.id]) {
-                    alert("⏳ Verifikasi sedang berjalan! Tunggu hingga selesai.");
+                    alert("⏳ Verifikasi sedang berjalan!");
                     return;
                 }
-                
-                const confirmMsg = `🔔 KONFIRMASI 🔔\n\nAnda akan membuka:\n${btn.url}\n\nSetelah membuka, Anda HARUS:\n${getActionGuide(btn.type)}\n\nAnda akan diberikan waktu 5 detik untuk menyelesaikan aksi.\n\nLanjutkan?`;
-                
-                if(confirm(confirmMsg)) {
+                if(confirm(`🔔 KONFIRMASI 🔔\n\nBuka: ${btn.url}\n\nSetelah membuka, ${getActionGuide(btn.type)}\n\nWaktu verifikasi: 5 detik\n\nLanjutkan?`)) {
                     startVerification(btn, card);
                 }
             };
         } else {
             card.style.cursor = 'default';
-            card.onclick = () => {
-                alert("✅ Aksi sudah selesai! Terima kasih.");
-            };
+            card.onclick = () => alert("✅ Aksi sudah selesai!");
         }
         
         container.appendChild(card);
@@ -332,15 +364,14 @@ function render() {
 
 function updateProgress() {
     const displayButtons = getDisplayButtons();
-    let total = displayButtons.length;
-    let completed = displayButtons.filter(b => b.completed).length;
+    const total = displayButtons.length;
+    const completed = displayButtons.filter(b => b.completed).length;
     
     document.getElementById('completedCount').innerText = completed;
     document.getElementById('totalCount').innerText = total;
-    const percent = total === 0 ? 0 : (completed / total) * 100;
-    document.getElementById('progressFill').style.width = `${percent}%`;
-    const unlockBtn = document.getElementById('unlockBtn');
+    document.getElementById('progressFill').style.width = total === 0 ? '0%' : `${(completed/total)*100}%`;
     
+    const unlockBtn = document.getElementById('unlockBtn');
     if(completed === total && total > 0) {
         unlockBtn.classList.remove('disabled');
         unlockBtn.innerText = '🔓 UNLOCK LINK → Lanjut ke tujuan';
@@ -350,28 +381,13 @@ function updateProgress() {
     }
 }
 
-// ========== ADMIN SAVE (Publikasi perubahan ke semua user) ==========
+// ========== ADMIN SAVE ==========
 function saveAllChanges() {
-    saveMasterButtonsToLocal();
-    // Reset userCompleted untuk button yang dihapus? Biarkan saja
-    // Tapi bersihkan userCompleted untuk button yang sudah tidak ada
-    const existingIds = new Set(masterButtons.map(b => b.id));
-    let changed = false;
-    Object.keys(userCompleted).forEach(id => {
-        if(!existingIds.has(id)) {
-            delete userCompleted[id];
-            changed = true;
-        }
-    });
-    if(changed) {
-        localStorage.setItem('userCompleted', JSON.stringify(userCompleted));
-    }
-    
-    alert("✅ Semua perubahan telah disimpan dan dipublikasikan!\n\n- Semua user sekarang akan melihat button terbaru\n- Link button sudah diperbarui\n- Progress user tetap tersimpan untuk button yang masih ada");
+    saveGlobalData();
+    alert("✅ Semua perubahan telah DISIMPAN dan DIPUBLIKASIKAN!\n\nSemua user sekarang akan melihat button terbaru.");
     render();
 }
 
-// ========== ADMIN FUNGSI ==========
 function addNewButton() {
     if(masterButtons.length >= MAX) {
         alert(`Maksimal ${MAX} button!`);
@@ -380,10 +396,9 @@ function addNewButton() {
     const nameInput = document.getElementById('newName');
     const iconSelect = document.getElementById('newIcon');
     let newName = nameInput.value.trim();
-    if(newName === "") newName = "Action Item";
+    if(!newName) newName = "Action Item";
     const selectedIcon = iconSelect.value;
-    let defaultUrl = "#";
-    let type = "custom";
+    let defaultUrl = "#", type = "custom";
     
     if(selectedIcon.includes('youtube')) { defaultUrl = "https://www.youtube.com/@JoyWardanaa?sub_confirmation=1"; type = "subscribe"; }
     else if(selectedIcon.includes('discord')) { defaultUrl = "https://discord.gg/invite/example"; type = "join"; }
@@ -393,91 +408,82 @@ function addNewButton() {
     else if(selectedIcon.includes('bell')) { defaultUrl = "https://www.youtube.com/@JoyWardanaa"; type = "notify"; }
     else if(selectedIcon.includes('instagram')) { defaultUrl = "https://instagram.com/joywardana"; type = "follow"; }
     
-    const newId = "btn_"+Date.now()+"_"+Math.floor(Math.random()*999);
     masterButtons.push({
-        id:newId, name:newName, icon:selectedIcon,
-        completed:false, url:defaultUrl, type:type
+        id: "btn_"+Date.now()+"_"+Math.random().toString(36).substr(2,6),
+        name: newName, icon: selectedIcon, url: defaultUrl, type: type
     });
     render();
     nameInput.value = "";
-}
-
-function saveRedirectUrl() {
+}ion saveRedirectUrl() {
     const newUrl = document.getElementById('redirectUrlInput').value.trim();
     if(newUrl) {
         redirectTargetUrl = newUrl;
-        localStorage.setItem('redirectTargetUrl', redirectTargetUrl);
+        saveGlobalData();
         alert("✅ Link tujuan berhasil disimpan!");
     }
 }
 
-// ========== UNLOCK & REDIRECT ==========
 function handleUnlock() {
     const displayButtons = getDisplayButtons();
-    let total = displayButtons.length;
-    let completed = displayButtons.filter(b => b.completed).length;
+    const total = displayButtons.length;
+    const completed = displayButtons.filter(b => b.completed).length;
     
     if(completed === total && total > 0) {
-        alert("🎉 SELAMAT! 🎉\nAnda telah menyelesaikan semua aksi!\nAkan diarahkan ke link tujuan.");
+        alert("🎉 SELAMAT! 🎉\nAkan diarahkan ke link tujuan.");
         window.location.href = redirectTargetUrl;
     } else {
-        alert(`❌ Belum selesai! ${completed} dari ${total} aksi sudah dikerjakan. Selesaikan semua dulu!`);
+        alert(`❌ Belum selesai! ${completed} dari ${total} aksi.`);
     }
 }
 
-// ========== LOGIN SYSTEM ==========
+// ========== LOGIN ==========
 function showLoginModal() {
     document.getElementById('loginModal').classList.add('show');
 }
-
 function closeLoginModal() {
     document.getElementById('loginModal').classList.remove('show');
 }
-
 function login(username, password) {
     if(username === ADMIN_USER && password === ADMIN_PASS) {
         currentUser = 'admin';
         localStorage.setItem('currentUser', 'admin');
-        localStorage.removeItem('userName');
+        localStorage.setItem('currentUserId', 'admin_' + Date.now());
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('adminIndicator').style.display = 'inline';
         document.getElementById('loginStatusText').innerHTML = '<i class="fas fa-crown"></i> Admin';
-        document.getElementById('redirectUrlInput').value = redirectTargetUrl;
-        render();
         closeLoginModal();
+        render();
         return true;
     } else if(username !== "" && password !== "") {
         currentUser = 'user';
+        const userId = 'user_' + username + '_' + Date.now();
         localStorage.setItem('currentUser', 'user');
+        localStorage.setItem('currentUserId', userId);
         localStorage.setItem('userName', username);
         document.getElementById('adminPanel').style.display = 'none';
         document.getElementById('adminIndicator').style.display = 'none';
         document.getElementById('loginStatusText').innerHTML = `<i class="fas fa-user"></i> ${username.substring(0,10)}`;
-        render();
         closeLoginModal();
+        render();
         return true;
     }
     alert("Username / password tidak boleh kosong!");
     return false;
 }
-
 function logout() {
-    Object.keys(activeTimers).forEach(timerId => {
-        if(activeTimers[timerId]) clearInterval(activeTimers[timerId]);
-    });
+    Object.keys(activeTimers).forEach(id => clearInterval(activeTimers[id]));
     activeTimers = {};
-    
     currentUser = null;
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUserId');
     localStorage.removeItem('userName');
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('adminIndicator').style.display = 'none';
     document.getElementById('loginStatusText').innerHTML = 'Login';
     render();
 }
-
 function checkSession() {
-    loadMasterButtons();
+    loadGlobalData();
     const savedUser = localStorage.getItem('currentUser');
     const savedName = localStorage.getItem('userName');
     if(savedUser === 'admin') {
@@ -485,7 +491,6 @@ function checkSession() {
         document.getElementById('adminPanel').style.display = 'block';
         document.getElementById('adminIndicator').style.display = 'inline';
         document.getElementById('loginStatusText').innerHTML = '<i class="fas fa-crown"></i> Admin';
-        document.getElementById('redirectUrlInput').value = redirectTargetUrl;
         render();
     } else if(savedUser === 'user' && savedName) {
         currentUser = 'user';
@@ -494,26 +499,24 @@ function checkSession() {
         document.getElementById('loginStatusText').innerHTML = `<i class="fas fa-user"></i> ${savedName.substring(0,10)}`;
         render();
     } else {
-        currentUser = null;
         render();
     }
 }
 
-// ========== EVENT LISTENER ==========
-document.getElementById('modalLoginBtn').addEventListener('click', () => {
-    const user = document.getElementById('modalUser').value;
-    const pass = document.getElementById('modalPass').value;
-    login(user, pass);
-});
-document.getElementById('unlockBtn').addEventListener('click', handleUnlock);
-document.getElementById('addBtn').addEventListener('click', addNewButton);
-document.getElementById('saveRedirectBtn').addEventListener('click', saveRedirectUrl);
-document.getElementById('saveAllChangesBtn').addEventListener('click', saveAllChanges);
-document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape') closeLoginModal();
-});
+// ========== EVENT & INIT ==========
+document.getElementById('modalLoginBtn').onclick = () => {
+    login(document.getElementById('modalUser').value, document.getElementById('modalPass').value);
+};
+document.getElementById('unlockBtn').onclick = handleUnlock;
+document.getElementById('addBtn').onclick = addNewButton;
+document.getElementById('saveRedirectBtn').onclick = saveRedirectUrl;
+document.getElementById('saveAllChangesBtn').onclick = saveAllChanges;
+document.onkeydown = (e) => { if(e.key === 'Escape') closeLoginModal(); };
 
+loadMediaFiles();
 checkSession();
 </script>
 </body>
 </html>
+
+funct
