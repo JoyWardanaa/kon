@@ -2,156 +2,275 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Fake Numbers & SMS - Multi Negara</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Joy Slots - Demo Slot Online</title>
     <style>
-        body { font-family: monospace; margin: 20px; background: #111; color: #0f0; }
-        .container { display: flex; gap: 20px; flex-wrap: wrap; }
-        .country-card { border: 1px solid #0f0; padding: 10px; margin: 10px 0; background: #1a1a1a; width: 300px; }
-        .number-item { background: #222; margin: 5px; padding: 5px; cursor: pointer; }
-        .number-item:hover { background: #333; }
-        .messages { border: 1px solid #0f0; height: 400px; overflow-y: scroll; padding: 10px; width: 500px; }
-        .msg { border-bottom: 1px solid #333; margin: 5px 0; }
-        .active { background: #2a4a2a; }
-        button { background: #0a0; color: #000; border: none; padding: 5px; cursor: pointer; }
+        * { box-sizing: border-box; user-select: none; }
+        body { margin: 0; background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%); font-family: 'Segoe UI', 'Arial', sans-serif; color: #eee; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .app { width: 100%; max-width: 1400px; padding: 20px; }
+        .auth-box { background: rgba(0,0,0,0.65); backdrop-filter: blur(12px); border-radius: 48px; padding: 30px; max-width: 480px; margin: 40px auto; border: 1px solid rgba(255,215,0,0.3); box-shadow: 0 20px 35px rgba(0,0,0,0.5); }
+        .auth-box h2 { text-align: center; color: #ffd966; margin-bottom: 24px; }
+        .input-group { margin-bottom: 18px; }
+        .input-group input { width: 100%; padding: 14px 20px; background: #1e243b; border: none; border-radius: 60px; color: white; font-size: 16px; outline: none; border: 1px solid #2a334e; }
+        .input-group input:focus { border-color: #ffb347; }
+        button { background: linear-gradient(135deg, #f0a500, #c97e00); border: none; padding: 12px 24px; border-radius: 60px; font-weight: bold; font-size: 18px; color: #1a1f2e; cursor: pointer; width: 100%; margin-top: 8px; transition: 0.2s; }
+        button:active { transform: scale(0.97); }
+        .switch-text { text-align: center; margin-top: 20px; color: #aaa; cursor: pointer; }
+        .dashboard { display: none; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #0f1422cc; border-radius: 60px; padding: 10px 24px; margin-bottom: 30px; backdrop-filter: blur(8px); }
+        .balance { background: #00000066; padding: 8px 22px; border-radius: 40px; font-weight: bold; color: #ffd966; font-size: 1.5rem; }
+        .admin-badge { background: #8b0000; padding: 5px 15px; border-radius: 30px; font-size: 12px; }
+        .slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; margin-top: 20px; }
+        .slot-card { background: #141a30; border-radius: 36px; padding: 18px; text-align: center; cursor: pointer; transition: 0.2s; border: 1px solid #2e3a5e; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .slot-card:hover { transform: translateY(-6px); border-color: #f0a500; }
+        .slot-name { font-size: 1.8rem; font-weight: bold; margin: 12px 0; }
+        .bet-control { margin: 15px 0; display: flex; gap: 12px; justify-content: center; align-items: center; }
+        .bet-control input { width: 100px; text-align: center; background: #0a0f1e; border: none; padding: 8px; border-radius: 40px; color: white; }
+        .spin-btn { background: #3c2b1b; color: #ffcc80; width: auto; padding: 8px 28px; margin-top: 0; }
+        .slot-result { margin-top: 12px; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px; }
+        .admin-panel { background: #0b0f1c; margin-top: 40px; border-radius: 32px; padding: 20px; border: 1px solid #ffa50055; display: none; }
+        .admin-panel h3 { color: #ffaa33; }
+        .admin-row { display: flex; flex-wrap: wrap; gap: 15px; margin: 15px 0; align-items: center; }
+        .admin-row input, .admin-row select { background: #1e253f; border: none; padding: 10px; border-radius: 28px; color: white; }
+        .admin-row button { width: auto; background: #5a3e1f; }
+        .logout-btn { background: #4a2a2a; margin-top: 0; width: auto; padding: 6px 18px; }
+        @media (max-width: 700px) { .slot-name { font-size: 1.2rem; } .bet-control { flex-direction: column; } }
     </style>
 </head>
 <body>
-<h2>Fake Numbers & SMS - Multi Negara (DEMO)</h2>
-<div class="container">
-    <div id="numbersPanel"></div>
-    <div class="messages" id="smsBox">
-        <div class="msg">[sistem] Pilih nomor untuk melihat SMS</div>
+<div class="app" id="app">
+    <div id="authSection" class="auth-box">
+        <h2>🎰 JOY SLOTS 🎰</h2>
+        <div id="loginForm">
+            <div class="input-group"><input type="text" id="loginUser" placeholder="Username" autocomplete="off"></div>
+            <div class="input-group"><input type="password" id="loginPass" placeholder="Password"></div>
+            <button id="doLoginBtn">🔐 MASUK</button>
+            <div class="switch-text" id="toRegisterBtn">Belum punya akun? Daftar</div>
+        </div>
+        <div id="registerForm" style="display:none;">
+            <div class="input-group"><input type="text" id="regUser" placeholder="Username baru"></div>
+            <div class="input-group"><input type="password" id="regPass" placeholder="Password"></div>
+            <button id="doRegisterBtn">📝 DAFTAR</button>
+            <div class="switch-text" id="toLoginBtn">Sudah punya akun? Login</div>
+        </div>
+    </div>
+    <div id="dashboard" class="dashboard">
+        <div class="header">
+            <span>👤 <span id="displayUser">-</span> <span id="adminFlagSpan"></span></span>
+            <span class="balance">💰 <span id="userBalance">0</span> Koin</span>
+            <button class="logout-btn" id="logoutBtn">🚪 Keluar</button>
+        </div>
+        <div class="slot-grid" id="slotGrid"></div>
+        <div id="adminPanel" class="admin-panel">
+            <h3>⚙️ PANEL ADMINISTRATOR ⚙️</h3>
+            <div class="admin-row">
+                <label>Set Rarity WD (0-100%):</label>
+                <input type="number" id="adminWinRate" step="1" min="0" max="100" value="35">
+                <button id="setWinRateBtn">Terapkan ke Semua Slot</button>
+            </div>
+            <div class="admin-row">
+                <label>Max WD per Spin (x lipat):</label>
+                <input type="number" id="adminMaxMult" step="1" min="1" max="500" value="50">
+                <button id="setMaxMultBtn">Set Maksimal</button>
+            </div>
+            <div class="admin-row">
+                <label>User target:</label>
+                <input type="text" id="adminTargetUser" placeholder="username">
+                <label>Set Saldo:</label>
+                <input type="number" id="adminSetBalance" value="1000">
+                <button id="adminSetBalanceBtn">Ganti Saldo</button>
+            </div>
+            <div class="admin-row">
+                <label>Rarity Legendary (1-100):</label>
+                <input type="number" id="adminLegendRarity" value="5">
+                <button id="setLegendBtn">Set Rarity</button>
+            </div>
+            <small style="color:#aaa">* Semua pengaturan langsung aktif untuk semua pemain</small>
+        </div>
     </div>
 </div>
 <script>
-    // DATA NEGARA + 3 NOMOR PALSU PER NEGARA
-    const countries = [
-        { name: "Indonesia", code: "+62", prefix: "812", numbers: ["81212345678", "81287654321", "81399887766"] },
-        { name: "USA", code: "+1", prefix: "212", numbers: ["2125551234", "2125555678", "2125559999"] },
-        { name: "Russia", code: "+7", prefix: "900", numbers: ["9001234567", "9007654321", "9001112233"] },
-        { name: "Germany", code: "+49", prefix: "151", numbers: ["15112345678", "15187654321", "15199887766"] },
-        { name: "UK", code: "+44", prefix: "7700", numbers: ["7700123456", "7700654321", "7700998877"] },
-        { name: "India", code: "+91", prefix: "98765", numbers: ["9876543210", "9876501234", "9876598765"] },
-        { name: "Brazil", code: "+55", prefix: "119", numbers: ["11912345678", "11987654321", "11999887766"] },
-        { name: "Japan", code: "+81", prefix: "901", numbers: ["9012345678", "9018765432", "9011122334"] },
-        { name: "Australia", code: "+61", prefix: "412", numbers: ["412123456", "412654321", "412998877"] },
-        { name: "France", code: "+33", prefix: "612", numbers: ["612123456", "612654321", "612998877"] }
-    ];
-
-    let activeNumber = null;
-    let activeCountry = null;
-    let activeIndex = null;
-
-    // Storage SMS per nomor
-    let smsStorage = {};
-
-    const smsContainer = document.getElementById('smsBox');
-    const numbersPanel = document.getElementById('numbersPanel');
-
-    function addMessage(numberKey, text, isIncoming = true) {
-        if (!smsStorage[numberKey]) smsStorage[numberKey] = [];
-        const timestamp = new Date().toLocaleTimeString();
-        const msgObj = { time: timestamp, text: text, incoming: isIncoming };
-        smsStorage[numberKey].push(msgObj);
-        // Jika nomor aktif, refresh tampilan
-        if (activeNumber === numberKey) {
-            renderMessagesForActive();
+// ========== BAGIAN 1 SELESAI ==========
+// ========== BAGIAN 2 MULAI ==========
+let currentUser = null;
+let isAdmin = false;
+let gamesData = [
+    { id: "majong", name: "🐉 MAHJONG WAYS", icon: "🎴", baseWinProb: 35, maxMultiplier: 50, legendRarity: 5 },
+    { id: "zeus", name: "⚡ ZEUS THUNDER", icon: "🌩️", baseWinProb: 35, maxMultiplier: 50, legendRarity: 5 },
+    { id: "pragmatic", name: "🔥 PRAGMATIC GOLD", icon: "💎", baseWinProb: 35, maxMultiplier: 50, legendRarity: 5 },
+    { id: "starlight", name: "✨ STARLIGHT PRINCESS", icon: "👑", baseWinProb: 35, maxMultiplier: 50, legendRarity: 5 }
+];
+let usersDB = JSON.parse(localStorage.getItem("joy_slots_users")) || [];
+function saveUsers() { localStorage.setItem("joy_slots_users", JSON.stringify(usersDB)); }
+const ADMIN_USER = "joy1";
+const ADMIN_PW = "joyyy2121#";
+function initDefaultUsers() {
+    if (!usersDB.find(u => u.username === ADMIN_USER)) {
+        usersDB.push({ username: ADMIN_USER, password: ADMIN_PW, balance: 999999, isAdmin: true });
+    }
+    if (!usersDB.find(u => u.username === "demo")) {
+        usersDB.push({ username: "demo", password: "demo123", balance: 2000, isAdmin: false });
+    }
+    saveUsers();
+}
+initDefaultUsers();
+function findUser(u, p) { return usersDB.find(user => user.username === u && user.password === p); }
+function updateUserBalance(username, newBal) { let u = usersDB.find(x=>x.username===username); if(u) { u.balance=Math.max(0,newBal); saveUsers(); } }
+function getUser(username) { return usersDB.find(x=>x.username===username); }
+function spinSlot(slotId, betAmount, currentUsername) {
+    let slot = gamesData.find(g => g.id === slotId);
+    if (!slot) return { win: 0, message: "Error" };
+    let user = getUser(currentUsername);
+    if (!user) return { win: 0, message: "User invalid" };
+    if (user.balance < betAmount) return { win: 0, message: "Saldo tidak cukup!" };
+    let winProb = slot.baseWinProb;
+    let maxMult = slot.maxMultiplier;
+    let legendRarity = slot.legendRarity;
+    let rand = Math.random() * 100;
+    let isWin = rand <= winProb;
+    let winAmount = 0;
+    let resultText = "Kalah 💔";
+    if (isWin) {
+        let mult = 1;
+        let legendRoll = Math.random() * 100;
+        if (legendRoll <= legendRarity) {
+            mult = maxMult * (0.8 + Math.random() * 0.4);
+            resultText = "✨ LEGENDARY JACKPOT! ✨";
+        } else {
+            mult = Math.floor(Math.random() * (maxMult - 1 + 1) + 1);
+            resultText = `Menang ${mult}x 🎉`;
+        }
+        winAmount = Math.floor(betAmount * mult);
+        if (winAmount > maxMult * betAmount) winAmount = maxMult * betAmount;
+    } else {
+        winAmount = 0;
+    }
+    let newBalance = user.balance - betAmount + winAmount;
+    updateUserBalance(currentUsername, newBalance);
+    return { win: winAmount, newBalance: newBalance, message: resultText, multiplier: winAmount/betAmount };
+}
+function renderSlots() {
+    let container = document.getElementById("slotGrid");
+    if (!container) return;
+    container.innerHTML = "";
+    gamesData.forEach(slot => {
+        let card = document.createElement("div");
+        card.className = "slot-card";
+        card.innerHTML = `
+            <div class="slot-name">${slot.icon} ${slot.name}</div>
+            <div class="bet-control">
+                <input type="number" id="bet-${slot.id}" value="100" step="10" min="10">
+                <button class="spin-btn" data-id="${slot.id}">🎰 SPIN</button>
+            </div>
+            <div class="slot-result" id="result-${slot.id}">➖</div>
+        `;
+        container.appendChild(card);
+    });
+    document.querySelectorAll(".spin-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            let slotId = btn.getAttribute("data-id");
+            let betInput = document.getElementById(`bet-${slotId}`);
+            let bet = parseInt(betInput.value);
+            if (isNaN(bet) || bet < 10) bet = 10;
+            let userObj = getUser(currentUser);
+            if (!userObj) return alert("Login ulang");
+            if (userObj.balance < bet) { alert("Saldo tidak cukup!"); return; }
+            let result = spinSlot(slotId, bet, currentUser);
+            let resultDiv = document.getElementById(`result-${slotId}`);
+            if (result.win > 0) {
+                resultDiv.innerHTML = `💰 +${result.win} Koin! (${result.message})`;
+            } else {
+                resultDiv.innerHTML = `❌ ${result.message}`;
+            }
+            document.getElementById("userBalance").innerText = getUser(currentUser).balance;
+        });
+    });
+}
+function refreshUI() {
+    if (!currentUser) return;
+    let user = getUser(currentUser);
+    if (user) {
+        document.getElementById("userBalance").innerText = user.balance;
+        document.getElementById("displayUser").innerText = currentUser + (user.isAdmin ? " [ADMIN]" : "");
+        if (user.isAdmin) {
+            document.getElementById("adminFlagSpan").innerHTML = '<span class="admin-badge">ADMIN</span>';
+            document.getElementById("adminPanel").style.display = "block";
+            isAdmin = true;
+        } else {
+            document.getElementById("adminFlagSpan").innerHTML = '';
+            document.getElementById("adminPanel").style.display = "none";
+            isAdmin = false;
         }
     }
-
-    function renderMessagesForActive() {
-        smsContainer.innerHTML = '';
-        if (!activeNumber || !smsStorage[activeNumber] || smsStorage[activeNumber].length === 0) {
-            smsContainer.innerHTML = '<div class="msg">[sistem] Belum ada SMS masuk. Kirim OTP ke nomor ini (DEMO).</div>';
-            return;
-        }
-        smsStorage[activeNumber].forEach(msg => {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg';
-            msgDiv.innerText = `[${msg.time}] ${msg.incoming ? '📩 MASUK' : '📤 KELUAR'} : ${msg.text}`;
-            smsContainer.appendChild(msgDiv);
-        });
-        smsContainer.scrollTop = smsContainer.scrollHeight;
+}
+function applyWinRate(rate) {
+    gamesData.forEach(g => { g.baseWinProb = Math.min(100, Math.max(0, rate)); });
+    alert(`Win rate semua slot diubah menjadi ${rate}%`);
+}
+function applyMaxMult(mult) {
+    gamesData.forEach(g => { g.maxMultiplier = Math.min(500, Math.max(1, mult)); });
+    alert(`Max multiplier global = ${mult}x`);
+}
+function setUserBalanceByAdmin(targetUser, newBal) {
+    let u = usersDB.find(x=>x.username === targetUser);
+    if(u) { u.balance = Math.max(0, newBal); saveUsers(); if(currentUser === targetUser) refreshUI(); alert(`Saldo ${targetUser} diubah menjadi ${newBal}`); }
+    else alert("User tidak ditemukan");
+}
+function setLegendRarityGlobal(val) {
+    gamesData.forEach(g => { g.legendRarity = Math.min(30, Math.max(0, val)); });
+    alert(`Rarity Legendary diatur ke ${val}%`);
+}
+document.addEventListener("click", (e) => {
+    if(e.target.id === "setWinRateBtn") {
+        let rate = parseInt(document.getElementById("adminWinRate").value);
+        if(!isNaN(rate)) applyWinRate(rate);
     }
-
-    function generateFakeOTP() {
-        return Math.floor(100000 + Math.random() * 900000);
+    if(e.target.id === "setMaxMultBtn") {
+        let mult = parseInt(document.getElementById("adminMaxMult").value);
+        if(!isNaN(mult)) applyMaxMult(mult);
     }
-
-    // Simulasi OTP masuk ke nomor tertentu (dipanggil manual atau otomatis)
-    function simulateIncomingSMS(numberKey) {
-        const otp = generateFakeOTP();
-        const msgText = `Kode OTP Anda: ${otp}. Jangan berikan ke siapa pun.`;
-        addMessage(numberKey, msgText, true);
+    if(e.target.id === "adminSetBalanceBtn") {
+        let target = document.getElementById("adminTargetUser").value;
+        let bal = parseInt(document.getElementById("adminSetBalance").value);
+        if(target && !isNaN(bal)) setUserBalanceByAdmin(target, bal);
     }
-
-    // Auto-simulasi setiap 12 detik untuk nomor aktif (jika ada)
-    setInterval(() => {
-        if (activeNumber) {
-            simulateIncomingSMS(activeNumber);
-        }
-    }, 12000);
-
-    // Render semua negara dan nomor
-    function renderAllNumbers() {
-        numbersPanel.innerHTML = '';
-        countries.forEach((country, cIdx) => {
-            const card = document.createElement('div');
-            card.className = 'country-card';
-            card.innerHTML = `<strong>${country.name} (${country.code})</strong>`;
-            country.numbers.forEach((num, nIdx) => {
-                const fullNumber = `${country.code} ${num}`;
-                const numberKey = `${country.code}_${num}`;
-                const numDiv = document.createElement('div');
-                numDiv.className = 'number-item';
-                numDiv.innerText = fullNumber;
-                numDiv.onclick = () => {
-                    // Hapus highlight sebelumnya
-                    document.querySelectorAll('.number-item').forEach(el => el.classList.remove('active'));
-                    numDiv.classList.add('active');
-                    activeNumber = numberKey;
-                    activeCountry = country.name;
-                    activeIndex = nIdx;
-                    renderMessagesForActive();
-                    // Tambahkan pesan sistem
-                    const sysMsg = `[sistem] Sekarang menggunakan: ${fullNumber}`;
-                    addMessage(activeNumber, sysMsg, false);
-                };
-                card.appendChild(numDiv);
-            });
-            numbersPanel.appendChild(card);
-        });
+    if(e.target.id === "setLegendBtn") {
+        let leg = parseInt(document.getElementById("adminLegendRarity").value);
+        if(!isNaN(leg)) setLegendRarityGlobal(leg);
     }
-
-    // Inisialisasi storage kosong untuk setiap nomor
-    function initStorage() {
-        countries.forEach(country => {
-            country.numbers.forEach(num => {
-                const key = `${country.code}_${num}`;
-                if (!smsStorage[key]) smsStorage[key] = [];
-                // Tambahkan pesan selamat datang
-                smsStorage[key].push({ time: new Date().toLocaleTimeString(), text: `Nomor siap menerima SMS (DEMO). Kirim OTP ke ${country.code} ${num}`, incoming: false });
-            });
-        });
-    }
-
-    initStorage();
-    renderAllNumbers();
-
-    // Tombol manual untuk test OTP
-    const testBtn = document.createElement('button');
-    testBtn.innerText = '🔁 Kirim OTP Uji ke Nomor Aktif';
-    testBtn.style.margin = '10px';
-    testBtn.onclick = () => {
-        if (activeNumber) simulateIncomingSMS(activeNumber);
-        else alert('Pilih nomor dulu');
-    };
-    document.body.appendChild(testBtn);
-
-    const info = document.createElement('p');
-    info.style.color = '#aaa';
-    info.innerText = '⚠️ DEMO: Penerimaan SMS asli TIDAK berfungsi tanpa gateway nyata (Twilio, sms-activate.org, dll). Ini hanya simulasi antarmuka.';
-    document.body.appendChild(info);
+});
+document.getElementById("doLoginBtn").onclick = () => {
+    let u = document.getElementById("loginUser").value.trim();
+    let p = document.getElementById("loginPass").value;
+    let user = usersDB.find(x=>x.username===u && x.password===p);
+    if(user) {
+        currentUser = u;
+        document.getElementById("authSection").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        renderSlots();
+        refreshUI();
+    } else { alert("User atau password salah!"); }
+};
+document.getElementById("logoutBtn").onclick = () => {
+    currentUser = null;
+    document.getElementById("authSection").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("loginUser").value = "";
+    document.getElementById("loginPass").value = "";
+};
+document.getElementById("toRegisterBtn").onclick = () => { document.getElementById("loginForm").style.display="none"; document.getElementById("registerForm").style.display="block"; };
+document.getElementById("toLoginBtn").onclick = () => { document.getElementById("loginForm").style.display="block"; document.getElementById("registerForm").style.display="none"; };
+document.getElementById("doRegisterBtn").onclick = () => {
+    let newU = document.getElementById("regUser").value.trim();
+    let newP = document.getElementById("regPass").value;
+    if(!newU || !newP) { alert("Isi semua!"); return; }
+    if(usersDB.find(x=>x.username===newU)) { alert("Username sudah ada"); return; }
+    usersDB.push({ username: newU, password: newP, balance: 1000, isAdmin: false });
+    saveUsers();
+    alert("Registrasi berhasil! Silakan login.");
+    document.getElementById("loginForm").style.display="block";
+    document.getElementById("registerForm").style.display="none";
+};
 </script>
 </body>
 </html>
